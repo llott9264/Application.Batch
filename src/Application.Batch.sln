@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{3F181F5F-F45D-468F-BBE7-D9C00FFFDD83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Batch.ConsoleApp", "UI\Application.Batch.ConsoleApp\Application.Batch.ConsoleApp.csproj", "{73853489-5D8C-4DD3-93C3-BF066918E7FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3132418E-9049-4DDA-86A1-CC6B19D5EBED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73853489-5D8C-4DD3-93C3-BF066918E7FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73853489-5D8C-4DD3-93C3-BF066918E7FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73853489-5D8C-4DD3-93C3-BF066918E7FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73853489-5D8C-4DD3-93C3-BF066918E7FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73853489-5D8C-4DD3-93C3-BF066918E7FF} = {3F181F5F-F45D-468F-BBE7-D9C00FFFDD83}
+	EndGlobalSection
+EndGlobal
