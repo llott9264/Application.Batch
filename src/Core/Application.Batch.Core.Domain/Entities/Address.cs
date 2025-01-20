@@ -2,7 +2,7 @@
 
 namespace Application.Batch.Core.Domain.Entities;
 
-public class Address : AuditableEntity
+public class Address : Auditable
 {
 	public int Id { get; set; }
 	public string Street { get; set; } = string.Empty;

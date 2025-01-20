@@ -4,5 +4,5 @@ namespace Application.Batch.Core.Application.Contracts.Persistence;
 
 public interface ICustomerRepository : IRepository<Customer>
 {
-	Task<bool> IsCustomerSocialSecurityNumberUnique(string ssn);
+	Task<bool> IsCustomerSocialSecurityNumberUnique(string ssn, int customerId);
 }

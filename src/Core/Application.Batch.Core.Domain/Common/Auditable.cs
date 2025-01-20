@@ -1,6 +1,6 @@
 ﻿namespace Application.Batch.Core.Domain.Common;
 
-public class AuditableEntity
+public class Auditable
 {
 	public string? CreatedBy { get; set; }
 	public DateTime CreatedDate { get; set; }

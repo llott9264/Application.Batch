@@ -32,6 +32,6 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 
 	private async Task<bool> CustomerSsnUnique(CreateCustomerCommand e, CancellationToken token)
 	{
-		return !await _customerRepository.IsCustomerSocialSecurityNumberUnique(e.SocialSecurityNumber);
+		return !await _customerRepository.IsCustomerSocialSecurityNumberUnique(e.SocialSecurityNumber, e.Id);
 	}
 }

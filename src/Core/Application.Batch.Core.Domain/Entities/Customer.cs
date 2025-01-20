@@ -2,7 +2,7 @@
 
 namespace Application.Batch.Core.Domain.Entities;
 
-public class Customer : AuditableEntity
+public class Customer : Auditable
 {
 	public int Id { get; set; }
 	public string FirstName { get; set; } = string.Empty;
