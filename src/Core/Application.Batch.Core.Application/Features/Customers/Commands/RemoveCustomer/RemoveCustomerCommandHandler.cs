@@ -5,11 +5,11 @@ using MediatR;
 
 namespace Application.Batch.Core.Application.Features.Customers.Commands.RemoveCustomer;
 
-public class RemoveCustomerCommandHandler(IMapper mapper, ICustomerRepository customerRepository) : IRequestHandler<RemoveCustomerCommand>
+public class RemoveCustomerCommandHandler(IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<RemoveCustomerCommand>
 {
 	public async Task Handle(RemoveCustomerCommand request, CancellationToken cancellationToken)
 	{
-		Customer? customerToDelete = await customerRepository.GetByIdAsync(request.Id);
-		await customerRepository.RemoveAsync(customerToDelete);
+		Customer? customerToDelete = await unitOfWork.Customer.GetByIdAsync(request.Id);
+		await unitOfWork.Customer.RemoveAsync(customerToDelete);
 	}
 }

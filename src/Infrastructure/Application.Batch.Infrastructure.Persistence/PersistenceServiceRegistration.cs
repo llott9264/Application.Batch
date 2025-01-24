@@ -1,5 +1,4 @@
 ﻿using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +12,7 @@ public static class PersistenceServiceRegistration
 		services.AddDbContext<ApplicationDbContext>(options =>
 			options.UseSqlServer("name=ConnectionStrings:Customer"));
 
-		services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-		services.AddScoped<ICustomerRepository, CustomerRepository>();
-		services.AddScoped<IAddressRepository, AddressRepository>();
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		return services;
 	}

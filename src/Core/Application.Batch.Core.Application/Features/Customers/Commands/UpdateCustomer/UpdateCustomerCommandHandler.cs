@@ -5,12 +5,12 @@ using MediatR;
 
 namespace Application.Batch.Core.Application.Features.Customers.Commands.UpdateCustomer;
 
-public class UpdateCustomerCommandHandler(IMapper mapper, ICustomerRepository customerRepository) : IRequestHandler<UpdateCustomerCommand>
+public class UpdateCustomerCommandHandler(IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<UpdateCustomerCommand>
 {
 	public async Task Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
 	{
-		Customer? customerToUpdate = await customerRepository.GetByIdAsync(request.Id);
+		Customer? customerToUpdate = await unitOfWork.Customer.GetByIdAsync(request.Id);
 		mapper.Map<UpdateCustomerCommand, Customer>(request, customerToUpdate);
-		await customerRepository.UpdateAsync(customerToUpdate);
+		await unitOfWork.Customer.UpdateAsync(customerToUpdate);
 	}
 }

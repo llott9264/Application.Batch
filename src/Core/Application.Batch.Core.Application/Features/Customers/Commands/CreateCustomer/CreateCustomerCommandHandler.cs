@@ -7,13 +7,13 @@ using MediatR;
 
 namespace Application.Batch.Core.Application.Features.Customers.Commands.CreateCustomer;
 
-public class CreateCustomerCommandHandler(IMapper mapper, ICustomerRepository customerRepository) : IRequestHandler<CreateCustomerCommand, int>
+public class CreateCustomerCommandHandler(IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<CreateCustomerCommand, int>
 {
 	public async Task<int> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
 	{
 		Customer? customer = mapper.Map<Customer>(request);
 
-		CreateCustomerCommandValidator validator = new(customerRepository);
+		CreateCustomerCommandValidator validator = new(unitOfWork);
 		ValidationResult? validationResult = await validator.ValidateAsync(request, cancellationToken);
 
 		if (validationResult.Errors.Count > 0)
@@ -21,7 +21,7 @@ public class CreateCustomerCommandHandler(IMapper mapper, ICustomerRepository cu
 			throw new ValidationException(validationResult);
 		}
 
-		customer = await customerRepository.AddAsync(customer);
+		customer = await unitOfWork.Customer.AddAsync(customer);
 		return customer.Id;
 	}
 }

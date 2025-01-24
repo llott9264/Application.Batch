@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Application.Batch.Application;
+namespace Application.Batch.Core.Application;
 
 public static class ApplicationServiceRegistration
 {
@@ -8,6 +9,7 @@ public static class ApplicationServiceRegistration
 	{
 		services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
 		return services;
 	}
 }

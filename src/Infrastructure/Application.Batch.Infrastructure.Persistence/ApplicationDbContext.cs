@@ -1,4 +1,5 @@
-﻿using Application.Batch.Core.Domain.Common;
+﻿using Application.Batch.Core.Application.Contracts.Persistence;
+using Application.Batch.Core.Domain.Common;
 using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -17,7 +18,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
 	{
-		foreach (EntityEntry<Auditable> entry in ChangeTracker.Entries<Auditable>())
+		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
 		{
 			switch (entry.State)
 			{
@@ -35,7 +36,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 	public override int SaveChanges()
 	{
-		foreach (EntityEntry<Auditable> entry in ChangeTracker.Entries<Auditable>())
+		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
 		{
 			switch (entry.State)
 			{

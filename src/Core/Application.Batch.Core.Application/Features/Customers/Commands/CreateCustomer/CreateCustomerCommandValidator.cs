@@ -5,10 +5,10 @@ namespace Application.Batch.Core.Application.Features.Customers.Commands.CreateC
 
 public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
 {
-	private readonly ICustomerRepository _customerRepository;
-	public CreateCustomerCommandValidator(ICustomerRepository customerRepository)
+	private readonly IUnitOfWork _unitOfWork;
+	public CreateCustomerCommandValidator(IUnitOfWork unitOfWork)
 	{
-		_customerRepository = customerRepository;
+		_unitOfWork = unitOfWork;
 
 		RuleFor(p => p.LastName)
 			.NotEmpty().WithMessage("{PropertyName} is required.")
@@ -32,6 +32,6 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
 
 	private async Task<bool> CustomerSsnUnique(CreateCustomerCommand e, CancellationToken token)
 	{
-		return !await _customerRepository.IsCustomerSocialSecurityNumberUnique(e.SocialSecurityNumber, e.Id);
+		return !await _unitOfWork.Customer.IsCustomerSocialSecurityNumberUnique(e.SocialSecurityNumber, e.Id);
 	}
 }

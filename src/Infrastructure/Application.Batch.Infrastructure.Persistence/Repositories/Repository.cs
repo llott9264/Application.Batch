@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Application.Batch.Core.Application.Contracts.Persistence;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
