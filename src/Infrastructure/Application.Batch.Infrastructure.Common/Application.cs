@@ -1,22 +1,26 @@
 ﻿using Application.Batch.Core.Application.Contracts.Presentation;
-using Utilities.Logging.EventLog;
+using Application.Batch.Core.Application.Enums;
+using Application.Batch.Core.Application.Features.Log.Commands;
+using MediatR;
+using CustomersToPrintContractor = Application.Batch.Core.Application.Features.CustomersToPrintContractor;
+using RenewalsToPrintContractor = Application.Batch.Core.Application.Features.RenewalsToPrintContractor;
 
 namespace Application.Batch.Infrastructure.Common;
 
-public class Application(ILog logger) : IApplication
+public class Application(IMediator mediator) : IApplication
 {
 	public void Run(string workFlowName)
 	{
 		switch (workFlowName)
 		{
 			case "CustomersToPrintContractor":
-				CustomersToPrintContractor.Run();
+				mediator.Send(new CustomersToPrintContractor.Commands.ProcessWorkflow.ProcessWorkflowCommand());
 				break;
 			case "RenewalsToPrintContractor":
-				//workflowManager.RenewalsToPrintContractor.Run();
+				mediator.Send(new RenewalsToPrintContractor.Commands.ProcessWorkflow.ProcessWorkflowCommand());
 				break;
 			default:
-				logger.Error($"Invalid parameter: {workFlowName}");
+				mediator.Send(new CreateLogCommand($"Invalid parameter: {workFlowName}", LogType.Error));
 				break;
 		}
 	}

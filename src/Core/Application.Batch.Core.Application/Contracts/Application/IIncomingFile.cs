@@ -1,6 +1,6 @@
 ﻿namespace Application.Batch.Core.Application.Contracts.Application;
 
-public interface IWorkflow
+public interface IIncomingFile
 {
-	void Run();
+	
 }
