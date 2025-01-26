@@ -12,13 +12,13 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{
-		outgoingFile.CreateArchiveDirectory();
-		outgoingFile.DeleteFilesInDataTransferFolder();
-
-		await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
-
 		try
 		{
+			outgoingFile.CreateArchiveDirectory();
+			outgoingFile.DeleteFilesInDataTransferFolder();
+
+			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
+
 			List<Customer> customers = unitOfWork.Customers.GetAll();
 
 			if (customers.Count > 0)
