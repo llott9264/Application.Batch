@@ -3,7 +3,7 @@ using Application.Batch.Core.Domain.Entities;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
-public class CustomerRepository(ApplicationDbContext context) : Repository<Customer>(context), ICustomerRepository
+public class CustomerRepository(IDbContext context) : Repository<Customer>(context), ICustomerRepository
 {
 	public Task<bool> IsCustomerSocialSecurityNumberUnique(string ssn, int customerId)
 	{

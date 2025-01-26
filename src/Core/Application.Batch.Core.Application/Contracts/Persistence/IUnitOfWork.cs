@@ -2,7 +2,10 @@
 
 public interface IUnitOfWork
 {
-	ICustomerRepository Customer { get; }
-	IAddressRepository Address { get; }
+	ICustomerRepository Customers { get; }
+	IAddressRepository Addresses { get; }
 	int Complete();
+	Task<int> CompleteAsync();
+	int Complete(int commandTimeoutInSeconds);
+	Task<int> CompleteAsync(int commandTimeoutInSeconds);
 }

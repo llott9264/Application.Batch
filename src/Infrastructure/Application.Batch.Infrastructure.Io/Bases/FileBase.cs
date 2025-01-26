@@ -18,19 +18,19 @@ public abstract class FileBase(IMediator mediator, string archiveFolderBasePath,
 	public string ArchiveProcessedFolder => $@"{ArchiveFolder}\Processed\";
 	public string ArchiveFailedFolder => $@"{ArchiveFolder}\Failed\";
 
-	public void CleanUpArchiveFolder()
+	public async Task CleanUpArchiveFolder()
 	{
-		int fileRetentionLengthInMonths = Convert.ToInt32(Mediator.Send(new GetConfigurationByKeyQuery("FileRetentionPeriodInMonths")));
-		Mediator.Send(new CreateLogCommand($"Begin cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
+		int fileRetentionLengthInMonths = Convert.ToInt32(await Mediator.Send(new GetConfigurationByKeyQuery("FileRetentionPeriodInMonths")));
+		await Mediator.Send(new CreateLogCommand($"Begin cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
 		Utilities.IoOperations.Directory.DeleteDirectory(new DirectoryInfo(ArchiveFolderBasePath), fileRetentionLengthInMonths, true);
-		Mediator.Send(new CreateLogCommand($"End cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
+		await Mediator.Send(new CreateLogCommand($"End cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
 	}
 
-	public void MoveToFolder(string sourceFile, string destinationFolder)
+	public async Task MoveToFolder(string sourceFile, string destinationFolder)
 	{
 		if (Utilities.IoOperations.File.Move(sourceFile, destinationFolder))
 		{
-			Mediator.Send(new CreateLogCommand($"File was successfully moved to destination folder.", LogType.Information));
+			await Mediator.Send(new CreateLogCommand($"File was successfully moved to destination folder.", LogType.Information));
 		}
 	}
 

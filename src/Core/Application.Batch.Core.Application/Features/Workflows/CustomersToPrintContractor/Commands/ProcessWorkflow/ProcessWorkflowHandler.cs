@@ -19,28 +19,28 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 
 		try
 		{
-			List<Customer> customers = await unitOfWork.Customer.GetAllAsync();
+			List<Customer> customers = unitOfWork.Customers.GetAll();
 
 			if (customers.Count > 0)
 			{
 				if (outgoingFile.WriteFile(customers))
 				{
-					outgoingFile.EncryptFile();
+					await outgoingFile.EncryptFile();
 
 					if (outgoingFile.DoesArchiveGpgFileExist())
 					{
 						outgoingFile.MoveGpgFileToDataTransferFolder();
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
-						await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+						//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
 
-						outgoingFile.MoveArchiveFileToProcessedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						await outgoingFile.MoveArchiveFileToProcessedFolder();
+						await outgoingFile.MoveArchiveGpgFileToProcessFolder();
 					}
 					else
 					{
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
-						outgoingFile.MoveArchiveFileToFailedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						await outgoingFile.MoveArchiveFileToFailedFolder();
+						await outgoingFile.MoveArchiveGpgFileToProcessFolder();
 					}
 				}
 				else
@@ -59,7 +59,7 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 		}
 		finally
 		{
-			outgoingFile.CleanUpArchiveFolder();
+			await outgoingFile.CleanUpArchiveFolder();
 			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - End generating file for Customer List.", LogType.Information), cancellationToken);
 		}
 	}

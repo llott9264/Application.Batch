@@ -9,10 +9,10 @@ public interface IOutgoingFile : IFileBase
 	public string DataTransferGpgFullPath { get; }
 	public string GpgPublicKeyPath { get; }
 	public bool DoesArchiveGpgFileExist();
-	public void EncryptFile();
+	public Task EncryptFile();
 	public void MoveGpgFileToDataTransferFolder();
-	public void MoveArchiveFileToProcessedFolder();
-	public void MoveArchiveGpgFileToProcessFolder();
-	public void MoveArchiveFileToFailedFolder();
-	public void MoveArchiveGpgFileToFailedFolder();
+	public Task MoveArchiveFileToProcessedFolder();
+	public Task MoveArchiveGpgFileToProcessFolder();
+	public Task MoveArchiveFileToFailedFolder();
+	public Task MoveArchiveGpgFileToFailedFolder();
 }

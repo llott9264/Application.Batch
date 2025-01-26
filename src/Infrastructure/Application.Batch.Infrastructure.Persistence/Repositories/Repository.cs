@@ -7,9 +7,9 @@ namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-	protected readonly ApplicationDbContext Context;
+	protected readonly IDbContext Context;
 
-	protected Repository(ApplicationDbContext context)
+	protected Repository(IDbContext context)
 	{
 		Context = context;
 	}

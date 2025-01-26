@@ -1,12 +1,11 @@
-﻿using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Domain.Common;
+﻿using Application.Batch.Core.Domain.Common;
 using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Application.Batch.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IDbContext
 {
 	public DbSet<Address> Addresses { get; set; }
 	public DbSet<Customer> Customers { get; set; }
@@ -16,7 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 	}
 
-	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
+	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
 	{
 		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
 		{
@@ -31,7 +30,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 			}
 		}
 
-		return base.SaveChangesAsync(cancellationToken);
+		return await base.SaveChangesAsync(cancellationToken);
 	}
 
 	public override int SaveChanges()

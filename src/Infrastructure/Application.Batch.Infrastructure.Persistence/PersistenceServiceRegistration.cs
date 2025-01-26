@@ -12,6 +12,7 @@ public static class PersistenceServiceRegistration
 		services.AddDbContext<ApplicationDbContext>(options =>
 			options.UseSqlServer("name=ConnectionStrings:Customer"));
 
+		services.AddScoped<IDbContext, ApplicationDbContext>();
 		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		return services;
