@@ -1,9 +1,9 @@
 ﻿using Application.Batch.Core.Application.Contracts.Presentation;
 using Application.Batch.Core.Application.Enums;
-using Application.Batch.Core.Application.Features.Log.Commands;
+using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using MediatR;
-using CustomersToPrintContractor = Application.Batch.Core.Application.Features.CustomersToPrintContractor;
-using RenewalsToPrintContractor = Application.Batch.Core.Application.Features.RenewalsToPrintContractor;
+using CustomersToPrintContractor = Application.Batch.Core.Application.Features.Workflows.CustomersToPrintContractor;
+using RenewalsToPrintContractor = Application.Batch.Core.Application.Features.Workflows.RenewalsToPrintContractor;
 
 namespace Application.Batch.Infrastructure.Common;
 

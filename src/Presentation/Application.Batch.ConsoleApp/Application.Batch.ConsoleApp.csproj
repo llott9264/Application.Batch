@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application.Batch.Core.Application\Application.Batch.Core.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Common\Application.Batch.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Io\Application.Batch.Infrastructure.Io.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Persistence\Application.Batch.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 

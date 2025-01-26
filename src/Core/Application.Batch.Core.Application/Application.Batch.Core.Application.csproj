@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Profiles\" />
+    <Folder Include="Features\Utilities\Mapper\" />
     <Folder Include="Enums\" />
   </ItemGroup>
 

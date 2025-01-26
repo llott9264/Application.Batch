@@ -55,9 +55,10 @@ public class Repository<T> : IRepository<T> where T : class
 	{
 		Context.Set<T>().Update(entity);
 	}
-	public async Task UpdateAsync(T entity)
+	public Task UpdateAsync(T entity)
 	{
 		Context.Entry(entity).State = EntityState.Modified;
+		return Task.CompletedTask;
 	}
 
 	public void Remove(T entity)
@@ -65,9 +66,10 @@ public class Repository<T> : IRepository<T> where T : class
 		Context.Set<T>().Remove(entity);
 	}
 
-	public async Task RemoveAsync(T entity)
+	public Task RemoveAsync(T entity)
 	{
 		Context.Set<T>().Remove(entity);
+		return Task.CompletedTask;
 	}
 
 	public void RemoveRange(IEnumerable<T> entities)
