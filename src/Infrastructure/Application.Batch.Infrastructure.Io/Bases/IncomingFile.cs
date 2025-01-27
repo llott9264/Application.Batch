@@ -20,6 +20,14 @@ public abstract class IncomingFile(
 	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}\{GpgFileName}";
 	public string ArchiveFileFullPath => $@"{ArchiveFolder}\{FileName}";
 	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}\{GpgFileName}";
+	public bool DoesArchiveFileExist()
+	{
+		throw new NotImplementedException();
+	}
+	public bool DoesArchiveGpgFileExist()
+	{
+		throw new NotImplementedException();
+	}
 	public async Task DecryptFile()
 	{
 		await Mediator.Send(new DecryptFileCommand(ArchiveGpgFileFullPath, ArchiveFileFullPath, GpgPrivateKeyName, GpgPrivateKeyPassword));

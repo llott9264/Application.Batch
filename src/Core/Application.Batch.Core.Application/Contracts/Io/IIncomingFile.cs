@@ -2,5 +2,8 @@
 
 public interface IIncomingFile : IFileBase
 {
-	
+	public Task MoveToGpgFileToArchiveFolder();
+	public bool DoesArchiveGpgFileExist();
+	public bool DoesArchiveFileExist();
+	public Task DecryptFile();
 }
