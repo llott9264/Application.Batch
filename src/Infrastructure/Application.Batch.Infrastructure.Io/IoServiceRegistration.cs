@@ -9,7 +9,7 @@ public static class IoServiceRegistration
 	public static IServiceCollection AddIoServices(this IServiceCollection services)
 	{
 		services.AddScoped<ICustomerToPrintContractor, CustomerToPrintContractor>();
-
+		services.AddScoped<IRenewalsToPrintContractor, RenewalsToPrintContractor>();
 		return services;
 	}
 }
