@@ -3,6 +3,7 @@ using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
+using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.Bases;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
@@ -14,9 +15,9 @@ public class CustomersFromContractor(IMediator mediator) : IncomingFile(mediator
 {
 	public string BatchName => "Customers From Print Contractor";
 
-	public List<ProcessWorkflowViewModel> ReadFile()
+	public List<Customer> ReadFile()
 	{
-		List<ProcessWorkflowViewModel> customers = new();
+		List<Customer> customers = new();
 
 		try
 		{
@@ -30,7 +31,7 @@ public class CustomersFromContractor(IMediator mediator) : IncomingFile(mediator
 				{
 					string[] line = reader.ReadFields();
 
-					customers.Add(new ProcessWorkflowViewModel()
+					customers.Add(new Customer()
 					{
 						FirstName = line[0],
 						LastName = line[1],

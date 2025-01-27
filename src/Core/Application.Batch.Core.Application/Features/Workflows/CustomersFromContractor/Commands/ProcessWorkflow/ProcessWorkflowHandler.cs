@@ -25,8 +25,8 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor
 
 				if (incomingFile.DoesArchiveFileExist())
 				{
-					List<ProcessWorkflowViewModel> customers = incomingFile.ReadFile();
-					customers.ForEach(c => unitOfWork.Customers.Add(mapper.Map<Customer>(c)));
+					List<Customer> customers = incomingFile.ReadFile();
+					unitOfWork.Customers.AddRange(customers);
 					unitOfWork.Complete();
 
 					await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Successfully imported customer data.", LogType.Information), cancellationToken);
