@@ -27,8 +27,8 @@ public static class StartupExtensions
 			.ConfigureServices((context, services) =>
 			{
 				services.AddPersistenceServices(configuration);
-				services.AddApplicationServices();
-				services.AddCommonServices(configuration);
+				services.AddApplicationServices(configuration);
+				services.AddCommonServices();
 				services.AddIoServices();
 			})
 			.Build();

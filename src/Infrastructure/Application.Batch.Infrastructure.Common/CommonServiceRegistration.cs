@@ -11,14 +11,9 @@ namespace Application.Batch.Infrastructure.Common;
 public static class CommonServiceRegistration
 {
 
-	public static IServiceCollection AddCommonServices(this IServiceCollection services, IConfiguration configuration)
+	public static IServiceCollection AddCommonServices(this IServiceCollection services)
 	{
-		LogManager.Setup().LoadConfigurationFromFile(configuration.GetValue<string>("NLogConfigFile"));
-		services.AddSingleton<ILog, Log>();
-		services.AddSingleton<IEmail, Email>();
-		services.AddSingleton<IGpg, Gpg>(); 
 		services.AddScoped<IApplication, Application>();
-
 		return services;
 	}
 	
