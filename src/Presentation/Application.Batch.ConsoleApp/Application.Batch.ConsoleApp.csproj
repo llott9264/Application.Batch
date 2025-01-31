@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application.Batch.Core.Application\Application.Batch.Core.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Io\Application.Batch.Infrastructure.Io.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Pdf\Application.Batch.Infrastructure.Pdf.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Application.Batch.Infrastructure.Persistence\Application.Batch.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
@@ -30,6 +31,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\PdfTemplate.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

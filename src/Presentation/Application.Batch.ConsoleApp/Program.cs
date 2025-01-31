@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 
+Environment.SetEnvironmentVariable("ITEXT_BOUNCY_CASTLE_FACTORY_NAME", "bouncy-castle"); //Have to set this in case we need to create a PDF
 IConfiguration configuration = new ConfigurationBuilder().GetConfiguration();
 IHost host = StartupExtensions.BuildHost(configuration);
 IMediator? mediator = host.Services.GetService<IMediator>();

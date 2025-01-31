@@ -1,5 +1,6 @@
 ﻿using Application.Batch.Core.Application;
 using Application.Batch.Infrastructure.Io;
+using Application.Batch.Infrastructure.Pdf;
 using Application.Batch.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,7 @@ public static class StartupExtensions
 				services.AddPersistenceServices(configuration);
 				services.AddApplicationServices(configuration);
 				services.AddIoServices();
+				services.AddPdfServices();
 			})
 			.Build();
 	}
