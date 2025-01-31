@@ -33,14 +33,14 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
 						//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
 
-						await outgoingFile.MoveArchiveFileToProcessedFolder();
-						await outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						outgoingFile.MoveArchiveFileToProcessedFolder();
+						outgoingFile.MoveArchiveGpgFileToProcessFolder();
 					}
 					else
 					{
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
-						await outgoingFile.MoveArchiveFileToFailedFolder();
-						await outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						outgoingFile.MoveArchiveFileToFailedFolder();
+						outgoingFile.MoveArchiveGpgFileToProcessFolder();
 					}
 				}
 				else

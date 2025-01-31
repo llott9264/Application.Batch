@@ -1,5 +1,4 @@
 ﻿using Application.Batch.Core.Application;
-using Application.Batch.Infrastructure.Common;
 using Application.Batch.Infrastructure.Io;
 using Application.Batch.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +27,6 @@ public static class StartupExtensions
 			{
 				services.AddPersistenceServices(configuration);
 				services.AddApplicationServices(configuration);
-				services.AddCommonServices();
 				services.AddIoServices();
 			})
 			.Build();

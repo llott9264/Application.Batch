@@ -2,7 +2,6 @@
 using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
-using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.Bases;
 using MediatR;
@@ -29,14 +28,17 @@ public class CustomersFromContractor(IMediator mediator) : IncomingFile(mediator
 
 				while (!reader.EndOfData)
 				{
-					string[] line = reader.ReadFields();
+					string[]? line = reader.ReadFields();
 
-					customers.Add(new Customer()
+					if (line != null)
 					{
-						FirstName = line[0],
-						LastName = line[1],
-						SocialSecurityNumber = line[2]
-					});
+						customers.Add(new Customer()
+						{
+							FirstName = line[0],
+							LastName = line[1],
+							SocialSecurityNumber = line[2]
+						});
+					}
 				}
 			}
 		}

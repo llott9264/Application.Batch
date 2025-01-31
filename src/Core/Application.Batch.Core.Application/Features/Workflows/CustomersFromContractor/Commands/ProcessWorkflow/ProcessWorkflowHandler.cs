@@ -3,19 +3,18 @@ using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Domain.Entities;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 
-public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor incomingFile, IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor incomingFile, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			incomingFile.CreateArchiveDirectory();
-			await incomingFile.MoveToGpgFileToArchiveFolder();
+			incomingFile.MoveToGpgFileToArchiveFolder();
 
 			await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
 			

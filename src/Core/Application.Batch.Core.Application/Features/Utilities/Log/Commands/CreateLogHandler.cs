@@ -27,7 +27,6 @@ public class CreateLogHandler(ILog logger) : IRequestHandler<CreateLogCommand>
 				break;
 		}
 
-
 		return Task.CompletedTask;
 	}
 }

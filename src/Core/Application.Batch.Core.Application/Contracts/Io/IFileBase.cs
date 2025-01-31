@@ -8,7 +8,7 @@ public interface IFileBase
 	public string ArchiveProcessedFolder { get; }
 	public string ArchiveFailedFolder { get; } 
 	public Task CleanUpArchiveFolder();
-	public Task MoveToFolder(string sourceFile, string destinationFolder);
+	public void MoveToFolder(string sourceFile, string destinationFolder);
 	public void CreateArchiveDirectory();
 	public void DeleteFilesInDataTransferFolder();
 

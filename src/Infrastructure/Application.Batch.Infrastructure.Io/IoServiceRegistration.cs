@@ -1,4 +1,5 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
+using Application.Batch.Infrastructure.Io.IncomingFiles;
 using Application.Batch.Infrastructure.Io.OutgoingFiles;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class IoServiceRegistration
 	{
 		services.AddScoped<ICustomerToPrintContractor, CustomerToPrintContractor>();
 		services.AddScoped<IRenewalsToPrintContractor, RenewalsToPrintContractor>();
+		services.AddScoped<ICustomersFromContractor, CustomersFromContractor>();
 		return services;
 	}
 }

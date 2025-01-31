@@ -11,8 +11,8 @@ public interface IOutgoingFile : IFileBase
 	public bool DoesArchiveGpgFileExist();
 	public Task EncryptFile();
 	public void MoveGpgFileToDataTransferFolder();
-	public Task MoveArchiveFileToProcessedFolder();
-	public Task MoveArchiveGpgFileToProcessFolder();
-	public Task MoveArchiveFileToFailedFolder();
-	public Task MoveArchiveGpgFileToFailedFolder();
+	public void MoveArchiveFileToProcessedFolder();
+	public void MoveArchiveGpgFileToProcessFolder();
+	public void MoveArchiveFileToFailedFolder();
+	public void MoveArchiveGpgFileToFailedFolder();
 }

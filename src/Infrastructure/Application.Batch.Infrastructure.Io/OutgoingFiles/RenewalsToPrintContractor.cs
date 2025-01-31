@@ -4,12 +4,14 @@ using Application.Batch.Core.Application.Features.Utilities.Configuration.Querie
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.Bases;
+using iText.Kernel.Pdf;
+using iText.Layout;
 using MediatR;
 
 namespace Application.Batch.Infrastructure.Io.OutgoingFiles;
 
-public class RenewalsToPrintContractor(IMediator mediator) : OutgoingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
-	"RenewalCustomerList.txt", "RenewalCustomerList.txt.gpg", GetGpgPublicKeyName(mediator)), IRenewalsToPrintContractor
+internal class RenewalsToPrintContractor(IMediator mediator) : OutgoingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
+	"RenewalCustomerList.pdf", "RenewalCustomerList.pdf.gpg", GetGpgPublicKeyName(mediator)), IRenewalsToPrintContractor
 {
 	public string BatchName => "Customer To Print Contractor";
 
@@ -19,14 +21,22 @@ public class RenewalsToPrintContractor(IMediator mediator) : OutgoingFile(mediat
 
 		try
 		{
-			using (StreamWriter writer = new(ArchiveFileFullPath))
-			{
-				foreach (Customer customer in customers)
-				{
-					writer.WriteLine($"{customer.LastName},{customer.FirstName}{customer.SocialSecurityNumber}");
-					writer.Flush();
-				}
-			}
+			PdfWriter writer = new(ArchiveFileFullPath);
+			PdfDocument pdf = new(writer);
+			Document document = new(pdf);
+
+
+
+			document.Close();
+
+			//using (StreamWriter writer = new(ArchiveFileFullPath))
+			//{
+			//	foreach (Customer customer in customers)
+			//	{
+			//		writer.WriteLine($"{customer.LastName},{customer.FirstName}{customer.SocialSecurityNumber}");
+			//		writer.Flush();
+			//	}
+			//}
 
 			isSuccessful = true;
 		}

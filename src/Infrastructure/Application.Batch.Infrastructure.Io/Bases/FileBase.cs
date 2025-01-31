@@ -26,12 +26,9 @@ public abstract class FileBase(IMediator mediator, string archiveFolderBasePath,
 		await Mediator.Send(new CreateLogCommand($"End cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
 	}
 
-	public async Task MoveToFolder(string sourceFile, string destinationFolder)
+	public void MoveToFolder(string sourceFile, string destinationFolder)
 	{
-		if (Utilities.IoOperations.File.Move(sourceFile, destinationFolder))
-		{
-			await Mediator.Send(new CreateLogCommand($"File was successfully moved to destination folder.", LogType.Information));
-		}
+		Utilities.IoOperations.File.Move(sourceFile, destinationFolder);
 	}
 
 	public void CreateArchiveDirectory()
