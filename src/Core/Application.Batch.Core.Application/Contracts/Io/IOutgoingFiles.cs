@@ -12,7 +12,8 @@ public interface IOutgoingFiles : IFileBase
 	Task<bool> EncryptFiles();
 	void AddFileToEncrypt(string fileName);
 	bool DoArchiveGpgFilesExist();
-	Task<bool> MoveGpgFilesToDataTransferFolder();
+	bool DoArchiveFilesExist();
+	Task<bool> CopyGpgFilesToDataTransferFolder();
 	void MoveArchiveFilesToProcessedFolder();
 	void MoveArchiveGpgFilesToProcessFolder();
 	void MoveArchiveFilesToFailedFolder();

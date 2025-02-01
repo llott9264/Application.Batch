@@ -6,7 +6,6 @@ using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Domain.Entities;
 using MediatR;
 
-
 namespace Application.Batch.Infrastructure.Io.OutgoingFiles;
 
 internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintContractorPdf pdf)

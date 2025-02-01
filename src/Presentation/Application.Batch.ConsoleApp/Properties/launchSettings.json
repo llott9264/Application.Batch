@@ -2,7 +2,7 @@
   "profiles": {
     "Application.Batch.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "RenewalsToPrintContractor"
+      "commandLineArgs": "RevokesFromContractor"
     }
   }
 }

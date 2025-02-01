@@ -12,6 +12,7 @@ public static class IoServiceRegistration
 		services.AddScoped<ICustomerToPrintContractor, CustomerToPrintContractor>();
 		services.AddScoped<IRenewalsToPrintContractor, RenewalsToPrintContractor>();
 		services.AddScoped<ICustomersFromContractor, CustomersFromContractor>();
+		services.AddScoped<IRevokesFromContractor, RevokesFromContractor>();
 		return services;
 	}
 }

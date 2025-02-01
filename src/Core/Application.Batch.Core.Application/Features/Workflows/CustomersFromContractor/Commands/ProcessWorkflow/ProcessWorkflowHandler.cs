@@ -24,8 +24,29 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor
 
 				if (incomingFile.DoesArchiveFileExist())
 				{
-					List<Customer> customers = incomingFile.ReadFile();
-					unitOfWork.Customers.AddRange(customers);
+					List<CustomerViewModel> customers = incomingFile.ReadFile();
+
+
+					foreach (CustomerViewModel customerViewModel in customers)
+					{
+						Customer? customer = unitOfWork.Customers.Find(c => c.SocialSecurityNumber == customerViewModel.SocialSecurityNumber).FirstOrDefault();
+						
+						if (customer != null)
+						{
+							customer.FirstName = customerViewModel.FirstName;
+							customer.LastName = customerViewModel.LastName;
+						}
+						else
+						{
+							unitOfWork.Customers.Add(new Customer()
+							{
+								FirstName = customerViewModel.FirstName,
+								LastName = customerViewModel.LastName,
+								SocialSecurityNumber = customerViewModel.SocialSecurityNumber
+							});
+						}
+					}
+
 					unitOfWork.Complete();
 
 					await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Successfully imported customer data.", LogType.Information), cancellationToken);

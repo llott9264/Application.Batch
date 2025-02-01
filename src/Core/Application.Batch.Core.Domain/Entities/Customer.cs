@@ -8,4 +8,5 @@ public class Customer : Entity
 	public string LastName { get; set; } = string.Empty;
 	public string SocialSecurityNumber { get; set; } = string.Empty;
 	public List<Address> Addresses { get; set; } = new();
+	public bool IsRevoked { get; set; } = false;
 }

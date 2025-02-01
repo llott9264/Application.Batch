@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 
-public class OutgoingFiles(IMediator mediator,
+public abstract class OutgoingFiles(IMediator mediator,
 	string archiveFolderBasePath,
 	string dataTransferFolderBasePath,
 	string gpgPublicKeyName) : FileBase(mediator, archiveFolderBasePath, dataTransferFolderBasePath), IOutgoingFiles
@@ -66,6 +66,11 @@ public class OutgoingFiles(IMediator mediator,
 		return Files.Aggregate(true, (current, file) => current && File.Exists(file.ArchiveGpgFileFullPath));
 	}
 
+	public bool DoArchiveFilesExist()
+	{
+		return Files.Aggregate(true, (current, file) => current && File.Exists(file.ArchiveFileFullPath));
+	}
+
 	public void MoveArchiveFilesToProcessedFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
@@ -98,22 +103,14 @@ public class OutgoingFiles(IMediator mediator,
 		}
 	}
 
-	public async Task<bool> MoveGpgFilesToDataTransferFolder()
+	public async Task<bool> CopyGpgFilesToDataTransferFolder()
 	{
 		bool isSuccessful = false;
 
 		try
 		{
 			await Mediator.Send(new CreateLogCommand("Begin copying archive files to data transfer.", LogType.Information));
-
-			foreach (EncryptionFileDto file in Files)
-			{
-				string fileName = Path.GetFileName(file.ArchiveGpgFileFullPath);
-				string destinationPath = Path.Combine(DataTransferFolderBasePath, fileName);
-
-				File.Copy(file.ArchiveGpgFileFullPath, destinationPath, true);
-			}
-
+			Files.ForEach(f => File.Copy(f.ArchiveGpgFileFullPath, f.DataTransferGpgFileFullPath, true));
 			await Mediator.Send(new CreateLogCommand("Successfully copied gpg files to data transfer folder.", LogType.Information));
 			isSuccessful = true;
 		}

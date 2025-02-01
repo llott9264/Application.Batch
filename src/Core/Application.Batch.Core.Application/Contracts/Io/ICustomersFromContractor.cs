@@ -6,5 +6,5 @@ namespace Application.Batch.Core.Application.Contracts.Io;
 public interface ICustomersFromContractor : IIncomingFile
 {
 	public string BatchName { get; }
-	public List<Customer> ReadFile();
+	public List<CustomerViewModel> ReadFile();
 }

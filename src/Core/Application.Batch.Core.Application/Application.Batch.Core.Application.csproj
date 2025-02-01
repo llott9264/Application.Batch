@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Utilities\Mapper\" />
-    <Folder Include="Features\Workflows\CustomersFromContractor\Commands\ProcessWorkflow\" />
   </ItemGroup>
 
 </Project>

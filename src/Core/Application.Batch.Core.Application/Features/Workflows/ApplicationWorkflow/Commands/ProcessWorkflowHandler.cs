@@ -19,6 +19,9 @@ public class ProcessWorkflowHandler(IMediator mediator) : IRequestHandler<Proces
 			case WorkflowName.CustomersFromContractor:
 				await mediator.Send(new CustomersFromContractor.Commands.ProcessWorkflow.ProcessWorkflowCommand(), cancellationToken);
 				break;
+			case WorkflowName.RevokesFromContractor:
+				await mediator.Send(new RevokesFromContractor.Commands.ProcessWorkflow.ProcessWorkflowCommand(), cancellationToken);
+				break;
 			default:
 				await mediator.Send(new CreateLogCommand($"Invalid parameter: {request.WorkflowName}", LogType.Error), cancellationToken);
 				break;

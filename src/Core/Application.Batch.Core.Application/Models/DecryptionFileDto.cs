@@ -1,6 +1,6 @@
 ﻿namespace Application.Batch.Core.Application.Models;
 
-public class EncryptionFileDto(
+public class DecryptionFileDto(
 	string archiveFolder,
 	string dataTransferFolderBasePath,
 	string fileName,

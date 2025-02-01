@@ -4,5 +4,6 @@ public enum WorkflowName
 {
 	CustomersToPrintContractor,
 	RenewalsToPrintContractor,
-	CustomersFromContractor
+	CustomersFromContractor,
+	RevokesFromContractor
 }

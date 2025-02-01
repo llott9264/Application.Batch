@@ -8,6 +8,7 @@ public interface IOutgoingFile : IFileBase
 	public string ArchiveGpgFileFullPath { get; }
 	public string DataTransferGpgFullPath { get; }
 	public string GpgPublicKeyName { get; }
+	public bool DoesArchiveFileExist();
 	public bool DoesArchiveGpgFileExist();
 	public Task EncryptFile();
 	public void MoveGpgFileToDataTransferFolder();

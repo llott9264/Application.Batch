@@ -2,21 +2,22 @@
 using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
-using Application.Batch.Core.Domain.Entities;
+using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 using Application.Batch.Infrastructure.Io.Bases;
+using AutoMapper;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Application.Batch.Infrastructure.Io.IncomingFiles;
 
-public class CustomersFromContractor(IMediator mediator) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
+public class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
 	"CustomerList.txt", "CustomerList.txt.gpg", GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator)), ICustomersFromContractor
 {
 	public string BatchName => "Customers From Print Contractor";
 
-	public List<Customer> ReadFile()
+	public List<CustomerViewModel> ReadFile()
 	{
-		List<Customer> customers = new();
+		List<CustomerViewModel> customers = new();
 
 		try
 		{
@@ -32,19 +33,14 @@ public class CustomersFromContractor(IMediator mediator) : IncomingFile(mediator
 
 					if (line != null)
 					{
-						customers.Add(new Customer()
-						{
-							FirstName = line[0],
-							LastName = line[1],
-							SocialSecurityNumber = line[2]
-						});
+						customers.Add(mapper.Map<CustomerViewModel>((line[0], line[1], line[2])));
 					}
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred writing file.  Error message: {e.Message}", LogType.Error));
+			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return customers;

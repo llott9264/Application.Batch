@@ -24,6 +24,11 @@ public abstract class OutgoingFile(
 		await Mediator.Send(new EncryptFileCommand(ArchiveFileFullPath, ArchiveGpgFileFullPath, GpgPublicKeyName));
 	}
 
+	public bool DoesArchiveFileExist()
+	{
+		return File.Exists(ArchiveFileFullPath);
+	}
+
 	public bool DoesArchiveGpgFileExist()
 	{
 		return File.Exists(ArchiveGpgFileFullPath);
