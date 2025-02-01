@@ -1,4 +1,5 @@
-﻿using Application.Batch.Core.Application.Contracts.Io;
+﻿using System.Linq.Expressions;
+using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Gpg.Commands;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
@@ -128,7 +129,11 @@ public abstract class IncomingFiles(
 
 	public void GetGpgFilesInDataTransferFolder()
 	{
-		List<string> files = Directory.GetFiles(DataTransferFolderBasePath, "*.gpg").ToList();
-		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, Path.GetFileNameWithoutExtension(f), Path.GetFileName(f))));
+		List<FileInfo> files = new DirectoryInfo(DataTransferFolderBasePath).GetFiles()
+			.Where(f => f.Extension == ".gpg")
+			.OrderBy(f => f.CreationTime)
+			.ToList();
+
+		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, Path.GetFileNameWithoutExtension(f.Name), f.Name)));
 	}
 }

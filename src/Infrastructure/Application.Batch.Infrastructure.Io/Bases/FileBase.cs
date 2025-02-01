@@ -14,7 +14,7 @@ public abstract class FileBase(IMediator mediator, string archiveFolderBasePath,
 	protected IMediator Mediator { get; } = mediator;
 	public string ArchiveFolderBasePath { get; } = archiveFolderBasePath;
 	public string DataTransferFolderBasePath { get; } = dataTransferFolderBasePath;
-	public string ArchiveFolder => $"{ArchiveFolderBasePath}{_folderName}";
+	public string ArchiveFolder => @$"{ArchiveFolderBasePath}{_folderName}\";
 	public string ArchiveProcessedFolder => $@"{ArchiveFolder}\Processed\";
 	public string ArchiveFailedFolder => $@"{ArchiveFolder}\Failed\";
 
