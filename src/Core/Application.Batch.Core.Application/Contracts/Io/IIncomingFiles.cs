@@ -1,7 +1,10 @@
-﻿namespace Application.Batch.Core.Application.Contracts.Io;
+﻿using Application.Batch.Core.Application.Models;
+
+namespace Application.Batch.Core.Application.Contracts.Io;
 
 public interface IIncomingFiles : IFileBase
 {
+	public List<DecryptionFileDto> Files { get;}
 	public string GpgPrivateKeyName { get; }
 	public string GpgPrivateKeyPassword { get; }
 	public string GetArchiveFileFullPath(string fileName);

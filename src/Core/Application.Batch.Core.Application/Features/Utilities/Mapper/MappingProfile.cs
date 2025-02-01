@@ -20,6 +20,6 @@ public class MappingProfile : Profile
 			.ForMember(d => d.SocialSecurityNumber,
 				opt => opt.MapFrom(s => s.Item1))
 			.ForMember(d => d.IsRevoked,
-				opt => opt.MapFrom(s => s.Item2));
+				opt => opt.MapFrom(s => s.Item2 == "1"));
 	}
 }
