@@ -23,8 +23,9 @@ internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintCon
 		try
 		{
 			string pdfTemplateFullPath = Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:PdfTemplatePath")).Result;
+			int documentsPerFile = Convert.ToInt32(Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:DocumentsPerFile")).Result);
 
-			List<Customer[]> result = customers.Chunk(5000).ToList();
+			List<Customer[]> result = customers.Chunk(documentsPerFile).ToList();
 			string fileNameBase = "Renewals_";
 			int fileCount = 1;
 

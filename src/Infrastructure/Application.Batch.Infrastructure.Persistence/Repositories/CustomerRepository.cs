@@ -16,5 +16,4 @@ public class CustomerRepository(IDbContext context) : Repository<Customer>(conte
 	{
 		return Context.Customers.Include(c => c.Addresses).ToList();
 	}
-
 }
