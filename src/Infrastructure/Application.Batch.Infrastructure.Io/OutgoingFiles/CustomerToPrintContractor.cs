@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Application.Batch.Infrastructure.Io.OutgoingFiles;
 
-public class CustomerToPrintContractor(IMediator mediator) : OutgoingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
+internal class CustomerToPrintContractor(IMediator mediator) : OutgoingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
 	"CustomerList.txt", "CustomerList.txt.gpg", GetGpgPublicKeyName(mediator)), ICustomerToPrintContractor
 {
 	public string BatchName => "Customer To Print Contractor";

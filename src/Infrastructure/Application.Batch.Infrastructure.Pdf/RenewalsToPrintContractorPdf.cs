@@ -4,9 +4,6 @@ using iText.Kernel.Font;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf;
 using Application.Batch.Core.Domain.Entities;
-using iText.Kernel.Geom;
-using iText.Layout.Element;
-using iText.Layout;
 
 namespace Application.Batch.Infrastructure.Pdf
 {

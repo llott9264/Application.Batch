@@ -10,7 +10,7 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace Application.Batch.Infrastructure.Io.IncomingFiles;
 
-public class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
+internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
 	"CustomerList.txt", "CustomerList.txt.gpg", GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator)), ICustomersFromContractor
 {
 	public string BatchName => "Customers From Print Contractor";
