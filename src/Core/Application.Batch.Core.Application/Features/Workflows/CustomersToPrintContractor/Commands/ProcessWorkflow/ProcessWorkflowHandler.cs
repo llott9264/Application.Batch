@@ -40,7 +40,7 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 					{
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
 						outgoingFile.MoveArchiveFileToFailedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						outgoingFile.MoveArchiveGpgFileToFailedFolder();
 					}
 				}
 				else

@@ -4,25 +4,38 @@ using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
 using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Domain.Entities;
-using Application.Batch.Infrastructure.Io.Bases;
 using MediatR;
+
 
 namespace Application.Batch.Infrastructure.Io.OutgoingFiles;
 
-internal class RenewalsToPrintContractor(IMediator mediator, IPdf pdf) : OutgoingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
-	"RenewalCustomerList.pdf", "RenewalCustomerList.pdf.gpg", GetGpgPublicKeyName(mediator)), IRenewalsToPrintContractor
+internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintContractorPdf pdf)
+	: Bases.OutgoingFiles(mediator,
+		GetArchiveFolderBasePath(mediator),
+		GetDataTransferFolderBasePath(mediator),
+		GetGpgPublicKeyName(mediator)), IRenewalsToPrintContractor
 {
-	public string BatchName => "Customer To Print Contractor";
+	public string BatchName => "Renewals To Print Contractor";
 
-	public bool WriteFile(List<Customer> customers)
+	public bool WriteFiles(List<Customer> customers)
 	{
 		bool isSuccessful = false;
 
 		try
 		{
-			string pdfTemplatePath = Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:PdfTemplatePath")).Result;
+			string pdfTemplateFullPath = Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:PdfTemplatePath")).Result;
 
-			pdf.CreatePdf(pdfTemplatePath, ArchiveFileFullPath);
+			List<Customer[]> result = customers.Chunk(5000).ToList();
+			string fileNameBase = "Renewals_";
+			int fileCount = 1;
+
+			foreach (Customer[] chunk in result)
+			{
+				string archiveFileFullPath = GetArchiveFileFullPath($"{fileNameBase}{fileCount}.pdf");
+				pdf.CreatePdf(pdfTemplateFullPath, archiveFileFullPath, chunk);
+				AddFileToEncrypt(Path.GetFileName(archiveFileFullPath));
+				fileCount++;
+			}
 
 			isSuccessful = true;
 		}

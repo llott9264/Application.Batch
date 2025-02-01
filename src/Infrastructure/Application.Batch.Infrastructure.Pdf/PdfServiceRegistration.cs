@@ -7,7 +7,7 @@ public static class PdfServiceRegistration
 {
 	public static IServiceCollection AddPdfServices(this IServiceCollection services)
 	{
-		services.AddScoped<IPdf, Pdf>();
+		services.AddScoped<IRenewalsToPrintContractorPdf, RenewalsToPrintContractorPdf>();
 		return services;
 	}
 }

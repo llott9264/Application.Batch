@@ -2,8 +2,8 @@
 
 namespace Application.Batch.Core.Application.Contracts.Io;
 
-public interface IRenewalsToPrintContractor : IOutgoingFile
+public interface IRenewalsToPrintContractor : IOutgoingFiles
 {
 	public string BatchName { get; }
-	public bool WriteFile(List<Customer> customers);
+	public bool WriteFiles(List<Customer> customers);
 }

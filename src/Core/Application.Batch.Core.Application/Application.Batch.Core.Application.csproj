@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Pdf\" />
     <Folder Include="Features\Utilities\Mapper\" />
     <Folder Include="Features\Workflows\CustomersFromContractor\Commands\ProcessWorkflow\" />
   </ItemGroup>

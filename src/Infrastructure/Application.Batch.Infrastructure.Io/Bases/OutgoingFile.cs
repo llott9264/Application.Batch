@@ -10,18 +10,18 @@ public abstract class OutgoingFile(
 	string dataTransferFolderBasePath,
 	string fileName,
 	string gpgFileName,
-	string gpgPublicKeyPath) : FileBase(mediator, archiveFolderBasePath, dataTransferFolderBasePath), IOutgoingFile
+	string gpgPublicKeyName) : FileBase(mediator, archiveFolderBasePath, dataTransferFolderBasePath), IOutgoingFile
 {
 	public string FileName { get; } = fileName;
 	public string GpgFileName { get; } = gpgFileName;
-	public string GpgPublicKeyPath { get; } = gpgPublicKeyPath;
+	public string GpgPublicKeyName { get; } = gpgPublicKeyName;
 	public string ArchiveFileFullPath => $@"{ArchiveFolder}\{FileName}";
 	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}\{GpgFileName}";
 	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}\{GpgFileName}";
 
 	public async Task EncryptFile()
 	{
-		await Mediator.Send(new EncryptFileCommand(ArchiveFileFullPath, ArchiveGpgFileFullPath, GpgPublicKeyPath));
+		await Mediator.Send(new EncryptFileCommand(ArchiveFileFullPath, ArchiveGpgFileFullPath, GpgPublicKeyName));
 	}
 
 	public bool DoesArchiveGpgFileExist()

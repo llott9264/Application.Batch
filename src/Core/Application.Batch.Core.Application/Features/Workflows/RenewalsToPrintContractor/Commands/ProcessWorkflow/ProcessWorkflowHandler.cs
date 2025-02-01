@@ -16,45 +16,43 @@ public class ProcessWorkflowHandler(IMediator mediator, IRenewalsToPrintContract
 			outgoingFile.CreateArchiveDirectory();
 			outgoingFile.DeleteFilesInDataTransferFolder();
 
-			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
+			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Begin generating file for Renewals To Print Contractor.", LogType.Information), cancellationToken);
 
-			List<Customer> customers = unitOfWork.Customers.GetAll();
+			List<Customer> customers = unitOfWork.Customers.GetCustomersIncludeAddresses();
 
-			if (customers.Count > 0)
+			if (customers.Count == 0)
 			{
-				if (outgoingFile.WriteFile(customers))
-				{
-					await outgoingFile.EncryptFile();
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - No customers were found. Files not generated.", LogType.Warning), cancellationToken);
+				return;
+			}
 
-					if (outgoingFile.DoesArchiveGpgFileExist())
-					{
-						outgoingFile.MoveGpgFileToDataTransferFolder();
-						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
-						//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+			if (!outgoingFile.WriteFiles(customers))
+			{
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to write files for Renewals To Print Contractor.", LogType.Error), cancellationToken);
+				return;
+			}
 
-						outgoingFile.MoveArchiveFileToProcessedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
-					}
-					else
-					{
-						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
-						outgoingFile.MoveArchiveFileToFailedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
-					}
-				}
-				else
-				{
-					await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to write Customer file.", LogType.Error), cancellationToken);
-				}
+			await outgoingFile.EncryptFiles();
+			
+			if (outgoingFile.DoArchiveGpgFilesExist())
+			{
+				await outgoingFile.MoveGpgFilesToDataTransferFolder();
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
+				//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+
+				outgoingFile.MoveArchiveFilesToProcessedFolder();
+				outgoingFile.MoveArchiveGpgFilesToProcessFolder();
 			}
 			else
 			{
-				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - No customers were found. File not generated.", LogType.Warning), cancellationToken);
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt file for Renewals To Print Contractor.", LogType.Error), cancellationToken);
+				outgoingFile.MoveArchiveFilesToFailedFolder();
+				outgoingFile.MoveArchiveGpgFilesToFailedFolder();
 			}
 		}
 		catch (Exception e)
 		{
-			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Error occurred generating Customer List.  Error message: {e.Message}", LogType.Error), cancellationToken);
+			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Error occurred generating file for Renewals To Print Contractor.  Error message: {e.Message}", LogType.Error), cancellationToken);
 		}
 		finally
 		{
