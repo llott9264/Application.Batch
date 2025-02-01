@@ -23,9 +23,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 			{
 				case EntityState.Added:
 					entry.Entity.CreatedDate = DateTime.Now;
+					entry.Entity.CreatedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 					break;
 				case EntityState.Modified:
 					entry.Entity.LastModifiedDate = DateTime.Now;
+					entry.Entity.LastModifiedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 					break;
 			}
 		}
@@ -41,9 +43,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 			{
 				case EntityState.Added:
 					entry.Entity.CreatedDate = DateTime.Now;
+					entry.Entity.CreatedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 					break;
 				case EntityState.Modified:
 					entry.Entity.LastModifiedDate = DateTime.Now;
+					entry.Entity.LastModifiedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 					break;
 			}
 		}
