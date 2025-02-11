@@ -15,9 +15,9 @@ public abstract class OutgoingFile(
 	public string FileName { get; } = fileName;
 	public string GpgFileName { get; } = gpgFileName;
 	public string GpgPublicKeyName { get; } = gpgPublicKeyName;
-	public string ArchiveFileFullPath => $@"{ArchiveFolder}\{FileName}";
-	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}\{GpgFileName}";
-	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}\{GpgFileName}";
+	public string ArchiveFileFullPath => $@"{ArchiveFolder}{FileName}";
+	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}{GpgFileName}";
+	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}{GpgFileName}";
 
 	public async Task EncryptFile()
 	{

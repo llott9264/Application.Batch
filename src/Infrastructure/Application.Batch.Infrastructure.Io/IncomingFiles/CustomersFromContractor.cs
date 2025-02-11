@@ -7,15 +7,17 @@ using Application.Batch.Infrastructure.Io.Bases;
 using AutoMapper;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Application.Batch.Infrastructure.Io.Tests")]
 namespace Application.Batch.Infrastructure.Io.IncomingFiles;
 
 internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
-	"CustomerList.txt", "CustomerList.txt.gpg", GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator)), ICustomersFromContractor
+	GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator), "CustomerList.txt", "CustomerList.txt.gpg"), ICustomersFromContractor
 {
 	public string BatchName => "Customers From Print Contractor";
 
-	public List<CustomerViewModel> ReadFile()
+	public async Task<List<CustomerViewModel>> ReadFile()
 	{
 		List<CustomerViewModel> customers = new();
 
@@ -40,7 +42,7 @@ internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : Inc
 		}
 		catch (Exception e)
 		{
-			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
+			await Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return customers;

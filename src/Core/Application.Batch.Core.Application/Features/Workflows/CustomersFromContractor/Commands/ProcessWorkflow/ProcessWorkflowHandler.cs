@@ -24,7 +24,7 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor
 
 				if (incomingFile.DoesArchiveFileExist())
 				{
-					List<CustomerViewModel> customers = incomingFile.ReadFile();
+					List<CustomerViewModel> customers = await incomingFile.ReadFile();
 
 
 					foreach (CustomerViewModel customerViewModel in customers)
