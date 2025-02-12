@@ -26,6 +26,7 @@ public static class StartupExtensions
 		return Host.CreateDefaultBuilder()
 			.ConfigureServices((context, services) =>
 			{
+				services.AddSingleton<IConfiguration>(provider => configuration);
 				services.AddPersistenceServices(configuration);
 				services.AddApplicationServices(configuration);
 				services.AddIoServices();
