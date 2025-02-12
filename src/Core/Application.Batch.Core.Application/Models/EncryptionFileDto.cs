@@ -7,6 +7,6 @@ public class EncryptionFileDto(
 	string gpgFileName)
 {
 	public string ArchiveFileFullPath => $@"{archiveFolder}{fileName}";
-	public string ArchiveGpgFileFullPath => $@"{archiveFolder}{gpgFileName}";
-	public string DataTransferGpgFileFullPath => $@"{dataTransferFolderBasePath}{gpgFileName}";
+	public string ArchiveGpgFileFullPath => $@"{archiveFolder}{gpgFileName}.gpg";
+	public string DataTransferGpgFileFullPath => $@"{dataTransferFolderBasePath}{gpgFileName}.gpg";
 }
