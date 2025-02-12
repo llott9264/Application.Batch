@@ -116,7 +116,7 @@ public abstract class OutgoingFiles(IMediator mediator,
 		}
 		catch (Exception e)
 		{
-			await Mediator.Send(new CreateLogCommand($"Failure to copy archive files to data transfer. Error Message: {e.Message}", LogType.Error));
+			await Mediator.Send(new CreateLogCommand($"Failure to copy archive files to data transfer. Error Message: {e.Message}", LogType.Information));
 		}
 
 		await Mediator.Send(new CreateLogCommand("End copying archive files to data transfer.", LogType.Error));
