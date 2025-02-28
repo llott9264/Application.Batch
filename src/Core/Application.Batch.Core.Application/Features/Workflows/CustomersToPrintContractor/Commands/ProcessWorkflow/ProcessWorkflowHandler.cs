@@ -1,10 +1,9 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Application.Enums;
-using Application.Batch.Core.Application.Features.Utilities.Email.Commands;
-using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using Application.Batch.Core.Domain.Entities;
 using MediatR;
+using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.CustomersToPrintContractor.Commands.ProcessWorkflow;
 

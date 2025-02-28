@@ -1,6 +1,6 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Features.Utilities.Gpg.Commands;
 using MediatR;
+using Utilities.Gpg.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 

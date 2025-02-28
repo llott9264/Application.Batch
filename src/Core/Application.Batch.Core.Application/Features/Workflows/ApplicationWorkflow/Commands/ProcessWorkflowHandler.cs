@@ -1,6 +1,7 @@
 ﻿using Application.Batch.Core.Application.Enums;
-using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
 using MediatR;
+using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 
