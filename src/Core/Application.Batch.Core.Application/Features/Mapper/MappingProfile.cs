@@ -2,7 +2,7 @@
 using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
 using AutoMapper;
 
-namespace Application.Batch.Core.Application.Features.Utilities.Mapper;
+namespace Application.Batch.Core.Application.Features.Mapper;
 
 public class MappingProfile : Profile
 {

@@ -1,11 +1,11 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
 using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 using Application.Batch.Infrastructure.Io.Bases;
 using AutoMapper;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
 using System.Runtime.CompilerServices;
+using Utilities.Configuration.MediatR;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 

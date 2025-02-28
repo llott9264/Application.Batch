@@ -1,7 +1,7 @@
-﻿using Application.Batch.Core.Application.Features.Utilities.Configuration.Queries;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Moq;
+using Utilities.Configuration.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Tests;
 
