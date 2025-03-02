@@ -24,7 +24,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.OutgoingFiles
 		}
 
 		[Fact]
-		public void CustomerToPrintContractor_PropertiesSetCorrectly_ReturnsTrue()
+		public void CustomerToPrintContractor_PropertiesSetCorrectly()
 		{
 			//Arrange
 			string folderName = DateTime.Now.ToString("MMddyyyy");

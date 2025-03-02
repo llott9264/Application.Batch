@@ -60,7 +60,7 @@ internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : Inc
 
 	private static string GetGpgPrivateKeyName(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:PrivateKey")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:PrivateKeyName")).Result;
 	}
 
 	private static string GetGpgPrivateKeyPassword(IMediator mediator)

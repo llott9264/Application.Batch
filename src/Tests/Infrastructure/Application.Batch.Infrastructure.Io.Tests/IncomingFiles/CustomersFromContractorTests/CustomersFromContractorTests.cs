@@ -22,7 +22,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.CustomersFromC
 			Mock<IMediator> mock = new();
 			mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersFromContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
 			mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersFromContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-			mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersFromContractor:PrivateKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyName));
+			mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersFromContractor:PrivateKeyName"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyName));
 			mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersFromContractor:PrivateKeyPassword"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyPassword));
 			return mock;
 		}
@@ -35,7 +35,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.CustomersFromC
 		}
 
 		[Fact]
-		public void CustomersFromContractor_PropertiesSetCorrectly_ReturnsTrue()
+		public void CustomersFromContractor_PropertiesSetCorrectly()
 		{
 			//Arrange
 			string folderName = DateTime.Now.ToString("MMddyyyy");
@@ -66,7 +66,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.CustomersFromC
 			CustomersFromContractor customersFromContractor = new(GetMockMediator().Object, GetMapper());
 			Utilities.IoOperations.Directory.CreateDirectory(customersFromContractor.ArchiveFolder);
 			File.Copy("IncomingFiles\\CustomersFromContractorTests\\CustomerList.txt", customersFromContractor.ArchiveFileFullPath, true);
-			
+
 			//Act
 			List<CustomerViewModel> customerViewModels = await customersFromContractor.ReadFile();
 

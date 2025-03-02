@@ -10,16 +10,12 @@ namespace Application.Batch.ConsoleApp;
 
 public static class StartupExtensions
 {
-	public static IConfigurationBuilder BuildConfiguration(this IConfigurationBuilder builder)
+	public static IConfiguration GetConfiguration(this ConfigurationBuilder builder)
 	{
 		builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 			.AddJsonFile("appSettings.json", optional: false, reloadOnChange: true);
-		return builder;
-	}
 
-	public static IConfiguration GetConfiguration(this ConfigurationBuilder builder)
-	{
-		return builder.BuildConfiguration().Build();
+		return builder.Build();
 	}
 
 	public static IHost BuildHost(IConfiguration configuration)

@@ -36,7 +36,7 @@ public class RenewalsToPrintContractorTests
 	}
 
 	[Fact]
-	public void RenewalsToPrintContractor_PropertiesSetCorrectly_ReturnsTrue()
+	public void RenewalsToPrintContractor_PropertiesSetCorrectly()
 	{
 		//Arrange
 		string folderName = DateTime.Now.ToString("MMddyyyy");
@@ -52,6 +52,29 @@ public class RenewalsToPrintContractorTests
 		Assert.True(renewalsToPrintContractor.ArchiveProcessedFolder == $"{ArchiveFolderBasePath}{folderName}\\Processed\\");
 		Assert.True(renewalsToPrintContractor.ArchiveFailedFolder == $"{ArchiveFolderBasePath}{folderName}\\Failed\\");
 		Assert.True(renewalsToPrintContractor.GpgPublicKeyName == $"{GpgPublicKeyName}");
+	}
+
+	[Fact]
+	public void RenewalsToPrintContractor_MethodsReturnCorrectly()
+	{
+		//Arrange
+		string folderName = DateTime.Now.ToString("MMddyyyy");
+
+		//Act
+		RenewalsToPrintContractor renewalsToPrintContractor = new(GetMockMediator().Object, GetMockPdf().Object);
+
+		//Assert
+		Assert.True(renewalsToPrintContractor.BatchName == "Renewals To Print Contractor");
+		Assert.True(renewalsToPrintContractor.ArchiveFolderBasePath == $"{ArchiveFolderBasePath}");
+		Assert.True(renewalsToPrintContractor.DataTransferFolderBasePath == $"{DataTransferFolderBasePath}");
+		Assert.True(renewalsToPrintContractor.ArchiveFolder == $"{ArchiveFolderBasePath}{folderName}\\");
+		Assert.True(renewalsToPrintContractor.ArchiveProcessedFolder == $"{ArchiveFolderBasePath}{folderName}\\Processed\\");
+		Assert.True(renewalsToPrintContractor.ArchiveFailedFolder == $"{ArchiveFolderBasePath}{folderName}\\Failed\\");
+		Assert.True(renewalsToPrintContractor.GpgPublicKeyName == $"{GpgPublicKeyName}");
+
+		Assert.True(renewalsToPrintContractor.GetArchiveFileFullPath("File1.txt") == $"{renewalsToPrintContractor.ArchiveFolder}File1.txt");
+		Assert.True(renewalsToPrintContractor.GetArchiveGpgFileFullPath("File1.txt.gpg") == $"{renewalsToPrintContractor.ArchiveFolder}File1.txt.gpg");
+		Assert.True(renewalsToPrintContractor.DataTransferGpgFullPath("File1.txt.gpg") == $"{renewalsToPrintContractor.DataTransferFolderBasePath}File1.txt.gpg");
 	}
 
 	[Fact]
