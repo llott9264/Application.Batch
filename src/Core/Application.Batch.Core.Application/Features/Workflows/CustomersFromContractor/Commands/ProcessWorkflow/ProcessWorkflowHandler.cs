@@ -1,6 +1,5 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Domain.Entities;
 using MediatR;
 using Utilities.Logging.EventLog;

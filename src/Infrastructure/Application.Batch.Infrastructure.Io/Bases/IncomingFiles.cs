@@ -61,7 +61,6 @@ public abstract class IncomingFiles(
 	{
 		Files.Add(new DecryptionFileDto(ArchiveFolder,
 			DataTransferFolderBasePath,
-			Path.GetFileNameWithoutExtension(fileName),
 			fileName));
 	}
 	public bool DoArchiveGpgFilesExist()
@@ -133,6 +132,6 @@ public abstract class IncomingFiles(
 			.OrderBy(f => f.CreationTime)
 			.ToList();
 
-		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, Path.GetFileNameWithoutExtension(f.Name), f.Name)));
+		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, f.Name)));
 	}
 }

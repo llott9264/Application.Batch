@@ -57,8 +57,7 @@ public abstract class OutgoingFiles(IMediator mediator,
 	{
 		Files.Add(new EncryptionFileDto(ArchiveFolder,
 			DataTransferFolderBasePath,
-			fileName,
-			fileName + ".gpg"));
+			fileName));
 	}
 
 	public bool DoArchiveGpgFilesExist()

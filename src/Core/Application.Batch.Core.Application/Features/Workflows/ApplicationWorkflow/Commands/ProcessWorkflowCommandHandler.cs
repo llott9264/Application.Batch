@@ -5,7 +5,7 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 
-public class ProcessWorkflowHandler(IMediator mediator) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowCommandHandler(IMediator mediator) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{

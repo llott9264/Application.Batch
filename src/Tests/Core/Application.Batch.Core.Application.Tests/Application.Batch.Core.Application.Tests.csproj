@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -14,7 +14,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -25,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Infrastructure\Application.Batch.Infrastructure.Io\Application.Batch.Infrastructure.Io.csproj" />
+    <ProjectReference Include="..\..\..\Core\Application.Batch.Core.Application\Application.Batch.Core.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,9 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="IncomingFiles\CustomersFromContractorTests\CustomerList.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Mapper\" />
+    <Folder Include="Workflows\" />
   </ItemGroup>
 
 </Project>
