@@ -33,8 +33,8 @@ public abstract class IncomingFile(
 		await Mediator.Send(new DecryptFileCommand(ArchiveGpgFileFullPath, ArchiveFileFullPath, GpgPrivateKeyName, GpgPrivateKeyPassword));
 	}
 
-	public void MoveToGpgFileToArchiveFolder()
+	public async Task MoveToGpgFileToArchiveFolder()
 	{
-		MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
+		await MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
 	}
 }

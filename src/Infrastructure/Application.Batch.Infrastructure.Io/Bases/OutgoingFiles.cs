@@ -70,35 +70,35 @@ public abstract class OutgoingFiles(IMediator mediator,
 		return Files.Aggregate(true, (current, file) => current && File.Exists(file.ArchiveFileFullPath));
 	}
 
-	public void MoveArchiveFilesToProcessedFolder()
+	public async Task MoveArchiveFilesToProcessedFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveFileFullPath, ArchiveProcessedFolder);
+			await MoveToFolder(file.ArchiveFileFullPath, ArchiveProcessedFolder);
 		}
 	}
 
-	public void MoveArchiveGpgFilesToProcessFolder()
+	public async Task MoveArchiveGpgFilesToProcessFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+			await MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 		}
 	}
 
-	public void MoveArchiveFilesToFailedFolder()
+	public async Task MoveArchiveFilesToFailedFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveFileFullPath, ArchiveFailedFolder);
+			await MoveToFolder(file.ArchiveFileFullPath, ArchiveFailedFolder);
 		}
 	}
 
-	public void MoveArchiveGpgFilesToFailedFolder()
+	public async Task MoveArchiveGpgFilesToFailedFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveFailedFolder);
+			await MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveFailedFolder);
 		}
 	}
 

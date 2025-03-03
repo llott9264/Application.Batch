@@ -38,22 +38,22 @@ public abstract class OutgoingFile(
 		File.Copy(ArchiveGpgFileFullPath, DataTransferGpgFullPath);
 	}
 
-	public void MoveArchiveFileToProcessedFolder()
+	public async Task MoveArchiveFileToProcessedFolder()
 	{
-		MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
+		await MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public void MoveArchiveGpgFileToProcessFolder()
+	public async Task MoveArchiveGpgFileToProcessFolder()
 	{
-		MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public void MoveArchiveFileToFailedFolder()
+	public async Task MoveArchiveFileToFailedFolder()
 	{
-		MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
+		await MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
 	}
-	public void MoveArchiveGpgFileToFailedFolder()
+	public async Task MoveArchiveGpgFileToFailedFolder()
 	{
-		MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
 	}
 }

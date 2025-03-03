@@ -66,7 +66,7 @@ public class RevokesFromContractorTest
 		revokesFromContractor.AddFileToDecrypt("File1.txt.gpg");
 		revokesFromContractor.AddFileToDecrypt("File2.txt.gpg");
 
-		Utilities.IoOperations.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+		if(!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder)) System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
 		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File1.txt", $"{revokesFromContractor.ArchiveFolder}File1.txt", true);
 		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File2.txt", $"{revokesFromContractor.ArchiveFolder}File2.txt", true);
 
@@ -90,7 +90,7 @@ public class RevokesFromContractorTest
 		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
 		revokesFromContractor.AddFileToDecrypt("File3.txt.gpg");
 
-		Utilities.IoOperations.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+		if(!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder)) System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
 		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File3.txt", $"{revokesFromContractor.ArchiveFolder}File1.txt", true);
 
 		//Act

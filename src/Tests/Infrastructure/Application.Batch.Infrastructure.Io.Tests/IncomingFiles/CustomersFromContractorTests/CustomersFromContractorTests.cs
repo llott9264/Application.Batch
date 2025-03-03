@@ -64,7 +64,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.CustomersFromC
 		{
 			//Arrange
 			CustomersFromContractor customersFromContractor = new(GetMockMediator().Object, GetMapper());
-			Utilities.IoOperations.Directory.CreateDirectory(customersFromContractor.ArchiveFolder);
+			if (!System.IO.Directory.Exists(customersFromContractor.ArchiveFolder)) System.IO.Directory.CreateDirectory(customersFromContractor.ArchiveFolder);
 			File.Copy("IncomingFiles\\CustomersFromContractorTests\\CustomerList.txt", customersFromContractor.ArchiveFileFullPath, true);
 
 			//Act

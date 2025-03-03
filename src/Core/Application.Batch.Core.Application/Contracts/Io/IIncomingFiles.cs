@@ -14,10 +14,10 @@ public interface IIncomingFiles : IFileBase
 	public void AddFileToDecrypt(string fileName);
 	public bool DoArchiveGpgFilesExist();
 	public bool DoArchiveFilesExist();
-	public void MoveArchiveFilesToProcessedFolder();
-	public void MoveArchiveGpgFilesToProcessFolder();
-	public void MoveArchiveFilesToFailedFolder();
-	public void MoveArchiveGpgFilesToFailedFolder();
+	public Task MoveArchiveFilesToProcessedFolder();
+	public Task MoveArchiveGpgFilesToProcessFolder();
+	public Task MoveArchiveFilesToFailedFolder();
+	public Task MoveArchiveGpgFilesToFailedFolder();
 	public Task<bool> MoveGpgFilesToArchiveFolder();
 	public void GetGpgFilesInDataTransferFolder();
 }

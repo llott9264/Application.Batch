@@ -1,6 +1,10 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using MediatR;
 using Utilities.Configuration.MediatR;
+using Utilities.IoOperations.MediatR.Directory.CleanUpDirectory;
+using Utilities.IoOperations.MediatR.Directory.CreateDirectory;
+using Utilities.IoOperations.MediatR.Directory.DeleteFiles;
+using Utilities.IoOperations.MediatR.File.MoveFile;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
@@ -22,22 +26,22 @@ public abstract class FileBase(IMediator mediator, string archiveFolderBasePath,
 	{
 		int fileRetentionLengthInMonths = Convert.ToInt32(await Mediator.Send(new GetConfigurationByKeyQuery("FileRetentionPeriodInMonths")));
 		await Mediator.Send(new CreateLogCommand($"Begin cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
-		Utilities.IoOperations.Directory.DeleteDirectory(new DirectoryInfo(ArchiveFolderBasePath), fileRetentionLengthInMonths, true);
+		await Mediator.Send(new CleanUpDirectoryCommand(new DirectoryInfo(ArchiveFolderBasePath), fileRetentionLengthInMonths, true), CancellationToken.None);
 		await Mediator.Send(new CreateLogCommand($"End cleaning up of the Archive folder:  {ArchiveFolderBasePath}", LogType.Information));
 	}
 
-	public void MoveToFolder(string sourceFile, string destinationFolder)
+	public async Task MoveToFolder(string sourceFile, string destinationFolder)
 	{
-		Utilities.IoOperations.File.Move(sourceFile, destinationFolder);
+		await Mediator.Send(new MoveFileCommand(sourceFile, destinationFolder), CancellationToken.None);
 	}
 
-	public void CreateArchiveDirectory()
+	public async Task CreateArchiveDirectory()
 	{
-		Utilities.IoOperations.Directory.CreateDirectory(ArchiveFolder);
+		await Mediator.Send(new CreateDirectoryCommand(ArchiveFolder), CancellationToken.None);
 	}
 
-	public void DeleteFilesInDataTransferFolder()
+	public async Task DeleteFilesInDataTransferFolder()
 	{
-		Utilities.IoOperations.Directory.DeleteFilesInFolder(new DirectoryInfo(DataTransferFolderBasePath));
+		await Mediator.Send(new DeleteFilesCommand(new DirectoryInfo(DataTransferFolderBasePath)), CancellationToken.None);
 	}
 }
