@@ -15,7 +15,7 @@ public interface IIncomingFiles : IFileBase
 	public bool DoArchiveGpgFilesExist();
 	public bool DoArchiveFilesExist();
 	public Task MoveArchiveFilesToProcessedFolder();
-	public Task MoveArchiveGpgFilesToProcessFolder();
+	public Task MoveArchiveGpgFilesToProcessedFolder();
 	public Task MoveArchiveFilesToFailedFolder();
 	public Task MoveArchiveGpgFilesToFailedFolder();
 	public Task<bool> MoveGpgFilesToArchiveFolder();
