@@ -45,6 +45,15 @@
     <None Update="IncomingFiles\RevokesFromContractorTests\File3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="IncomingFiles\RevokesFromContractorTests\ReadFile1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="IncomingFiles\RevokesFromContractorTests\ReadFile2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="IncomingFiles\RevokesFromContractorTests\ReadFile3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

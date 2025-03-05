@@ -138,6 +138,6 @@ public abstract class IncomingFiles(
 			.OrderBy(f => f.CreationTime)
 			.ToList();
 
-		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, f.Name)));
+		files.ForEach(f => AddFileToDecrypt(f.Name));
 	}
 }

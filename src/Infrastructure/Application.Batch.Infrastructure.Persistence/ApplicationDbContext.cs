@@ -1,6 +1,5 @@
 ﻿using Application.Batch.Core.Domain.Common;
 using Application.Batch.Core.Domain.Entities;
-using Application.Batch.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 

@@ -12,6 +12,7 @@ using Utilities.Logging.EventLog.MediatR;
 using Utilities.Logging.EventLog;
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Asn1.BC;
 using Utilities.Gpg.MediatR;
 using Utilities.IoOperations.MediatR.File.MoveFile;
 
@@ -268,12 +269,12 @@ public class RevokesFromContractorTest
 	{
 		//Arrange
 		RevokesFromContractor revokesFromContractor = new(GetMockMediator().Object, GetMapper());
-		revokesFromContractor.AddFileToDecrypt("File1.txt.gpg");
-		revokesFromContractor.AddFileToDecrypt("File2.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ReadFile1.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ReadFile2.txt.gpg");
 
 		if (!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder)) System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
-		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File1.txt", $"{revokesFromContractor.ArchiveFolder}File1.txt", true);
-		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File2.txt", $"{revokesFromContractor.ArchiveFolder}File2.txt", true);
+		File.Copy("IncomingFiles\\RevokesFromContractorTests\\ReadFile1.txt", $"{revokesFromContractor.ArchiveFolder}ReadFile1.txt", true);
+		File.Copy("IncomingFiles\\RevokesFromContractorTests\\ReadFile2.txt", $"{revokesFromContractor.ArchiveFolder}ReadFile2.txt", true);
 		
 		//Act
 		List<RevokeViewModel> revokeViewModels = revokesFromContractor.ReadFiles();
@@ -292,10 +293,10 @@ public class RevokesFromContractorTest
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
 		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
-		revokesFromContractor.AddFileToDecrypt("File3.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ReadFile3.txt.gpg");
 
 		if(!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder)) System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
-		File.Copy("IncomingFiles\\RevokesFromContractorTests\\File3.txt", $"{revokesFromContractor.ArchiveFolder}File1.txt", true);
+		File.Copy("IncomingFiles\\RevokesFromContractorTests\\ReadFile3.txt", $"{revokesFromContractor.ArchiveFolder}ReadFile3.txt", true);
 
 		//Act
 		List<RevokeViewModel> revokeViewModels = revokesFromContractor.ReadFiles();
@@ -307,5 +308,187 @@ public class RevokesFromContractorTest
 			request.LogType == LogType.Error
 			&& request.Message.Contains("Error occurred reading file.")
 		), CancellationToken.None), Times.Once);
+	}
+
+	[Fact]
+	public void DoArchiveGpgFilesExist_AllFilesExist_ReturnsTrue()
+	{
+		//Arrange
+		Mock<IMediator> mock = GetMockMediator();
+		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
+		revokesFromContractor.AddFileToDecrypt("GpgFileExist1.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("GpgFileExist2.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("GpgFileExist3.txt.gpg");
+
+		if (!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder))
+			System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files.Where(file => File.Exists(file.ArchiveGpgFileFullPath)))
+		{
+			File.Delete(file.ArchiveGpgFileFullPath);
+		}
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files)
+		{
+			using (StreamWriter writer = new(file.ArchiveGpgFileFullPath))
+			{
+				writer.WriteLine("Hello World!");
+			}
+		}
+
+		//Act
+		bool doExist = revokesFromContractor.DoArchiveGpgFilesExist();
+
+		//Assert
+		Assert.True(doExist);
+	}
+
+	[Fact]
+	public void DoArchiveGpgFilesExist_OneFileDoesNotExist_ReturnsFalse()
+	{
+		//Arrange
+		Mock<IMediator> mock = GetMockMediator();
+		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
+		revokesFromContractor.AddFileToDecrypt("GpgFileDoesNotExist1.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("GpgFileDoesNotExist2.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("GpgFileDoesNotExist3.txt.gpg");
+
+		if (!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder))
+			System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files.Where(file => File.Exists(file.ArchiveGpgFileFullPath)))
+		{
+			File.Delete(file.ArchiveGpgFileFullPath);
+		}
+
+
+		using (StreamWriter writer = new(revokesFromContractor.Files[0].ArchiveGpgFileFullPath))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		using (StreamWriter writer = new(revokesFromContractor.Files[1].ArchiveGpgFileFullPath))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		//Act
+		bool doExist = revokesFromContractor.DoArchiveGpgFilesExist();
+
+		//Assert
+		Assert.False(doExist);
+	}
+
+	[Fact]
+	public void DoArchiveFilesExist_AllFilesExist_ReturnsTrue()
+	{
+		//Arrange
+		Mock<IMediator> mock = GetMockMediator();
+		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileExist1.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileExistFile2.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileExistFile3.txt.gpg");
+
+		if (!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder))
+			System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files.Where(file => File.Exists(file.ArchiveFileFullPath)))
+		{
+			File.Delete(file.ArchiveFileFullPath);
+		}
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files)
+		{
+			using (StreamWriter writer = new(file.ArchiveFileFullPath))
+			{
+				writer.WriteLine("Hello World!");
+			}
+		}
+
+		//Act
+		bool doExist = revokesFromContractor.DoArchiveFilesExist();
+
+		//Assert
+		Assert.True(doExist);
+	}
+
+	[Fact]
+	public void DoArchiveFilesExist_OneFileDoesNotExist_ReturnsFalse()
+	{
+		//Arrange
+		Mock<IMediator> mock = GetMockMediator();
+		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileDoesNotExist1.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileDoesNotExist2.txt.gpg");
+		revokesFromContractor.AddFileToDecrypt("ArchiveFileDoesNotExist3.txt.gpg");
+
+		if (!System.IO.Directory.Exists(revokesFromContractor.ArchiveFolder))
+			System.IO.Directory.CreateDirectory(revokesFromContractor.ArchiveFolder);
+
+		foreach (DecryptionFileDto file in revokesFromContractor.Files.Where(file => File.Exists(file.ArchiveFileFullPath)))
+		{
+			File.Delete(file.ArchiveFileFullPath);
+		}
+
+
+		using (StreamWriter writer = new(revokesFromContractor.Files[0].ArchiveFileFullPath))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		using (StreamWriter writer = new((revokesFromContractor.Files[1].ArchiveFileFullPath)))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		//Act
+		bool doExist = revokesFromContractor.DoArchiveFilesExist();
+
+		//Assert
+		Assert.False(doExist);
+	}
+
+	[Fact]
+	public void GetGpgFilesInDataTransferFolder_DecryptionFileDtosSetCorrectly_ReturnsTrue()
+	{
+		//Arrange
+		Mock<IMediator> mock = GetMockMediator();
+		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
+		
+		if (!System.IO.Directory.Exists(revokesFromContractor.DataTransferFolderBasePath))
+			System.IO.Directory.CreateDirectory(revokesFromContractor.DataTransferFolderBasePath);
+
+		if(System.IO.File.Exists($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest1.txt.gpg"))
+			File.Delete($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest1.txt.gpg");
+
+		if (System.IO.File.Exists($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest2.txt.gpg"))
+			File.Delete($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest2.txt.gpg");
+
+		using (StreamWriter writer = new($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest1.txt.gpg"))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		using (StreamWriter writer = new($"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest2.txt.gpg"))
+		{
+			writer.WriteLine("Hello World!");
+		}
+
+		//Act
+		revokesFromContractor.GetGpgFilesInDataTransferFolder();
+
+		//Assert
+		Assert.True(revokesFromContractor.Files.Count == 2);
+
+		DecryptionFileDto file1 = revokesFromContractor.Files[0];
+		DecryptionFileDto file2 = revokesFromContractor.Files[1];
+
+		Assert.True(file1.ArchiveGpgFileFullPath == $"{revokesFromContractor.ArchiveFolder}GpgFileTransferTest1.txt.gpg");
+		Assert.True(file1.ArchiveFileFullPath == $"{revokesFromContractor.ArchiveFolder}GpgFileTransferTest1.txt");
+		Assert.True(file1.DataTransferGpgFileFullPath == $"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest1.txt.gpg");
+
+		Assert.True(file2.ArchiveGpgFileFullPath == $"{revokesFromContractor.ArchiveFolder}GpgFileTransferTest2.txt.gpg");
+		Assert.True(file2.ArchiveFileFullPath == $"{revokesFromContractor.ArchiveFolder}GpgFileTransferTest2.txt");
+		Assert.True(file2.DataTransferGpgFileFullPath == $"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest2.txt.gpg");
 	}
 }

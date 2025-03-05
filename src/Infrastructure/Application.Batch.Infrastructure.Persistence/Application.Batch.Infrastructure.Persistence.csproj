@@ -16,8 +16,4 @@
     <ProjectReference Include="..\..\Core\Application.Batch.Core.Application\Application.Batch.Core.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-  </ItemGroup>
-
 </Project>
