@@ -15,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infrastructure\Application.Batch.Infrastructure.Io\Application.Batch.Infrastructure.Io.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Application.Batch.Infrastructure.Pdf\Application.Batch.Infrastructure.Pdf.csproj" />
   </ItemGroup>
 
   <ItemGroup>

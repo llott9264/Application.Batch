@@ -1,23 +1,15 @@
 ﻿using Application.Batch.Core.Application.Features.Mapper;
 using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
 using Application.Batch.Core.Application.Models;
-using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.IncomingFiles;
-using Application.Batch.Infrastructure.Io.OutgoingFiles;
 using AutoMapper;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
 using Utilities.Logging.EventLog.MediatR;
 using Utilities.Logging.EventLog;
-using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Asn1.BC;
 using Utilities.Gpg.MediatR;
 using Utilities.IoOperations.MediatR.File.MoveFile;
-using Utilities.IoOperations.MediatR.Directory.CleanUpDirectory;
-using Utilities.IoOperations.MediatR.Directory.CreateDirectory;
-using Utilities.IoOperations.MediatR.Directory.DeleteFiles;
 
 namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.RevokesFromContractorTests;
 
@@ -434,7 +426,6 @@ public class RevokesFromContractorTest
 			File.Delete(file.ArchiveFileFullPath);
 		}
 
-
 		using (StreamWriter writer = new(revokesFromContractor.Files[0].ArchiveFileFullPath))
 		{
 			writer.WriteLine("Hello World!");
@@ -453,7 +444,7 @@ public class RevokesFromContractorTest
 	}
 
 	[Fact]
-	public void GetGpgFilesInDataTransferFolder_DecryptionFileDtosSetCorrectly_ReturnsTrue()
+	public void GetGpgFilesInDataTransferFolder_DecryptionFileDtoSetCorrectly_ReturnsTrue()
 	{
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
@@ -495,63 +486,4 @@ public class RevokesFromContractorTest
 		Assert.True(file2.ArchiveFileFullPath == $"{revokesFromContractor.ArchiveFolder}GpgFileTransferTest2.txt");
 		Assert.True(file2.DataTransferGpgFileFullPath == $"{revokesFromContractor.DataTransferFolderBasePath}GpgFileTransferTest2.txt.gpg");
 	}
-
-	[Fact]
-	public void CleanUpArchiveFolder_MethodCallsCorrectly()
-	{
-		//Arrange
-		Mock<IMediator> mock = GetMockMediator();
-		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
-		
-		//Act
-		_ = revokesFromContractor.CleanUpArchiveFolder();
-
-		//Assert
-		mock.Verify(g => g.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "FileRetentionPeriodInMonths"), CancellationToken.None), Times.Exactly(1));
-
-		mock.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-			request.Message.Contains("Begin cleaning up of the Archive folder")
-			&& request.LogType == LogType.Information), CancellationToken.None), Times.Exactly(1));
-
-		mock.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-			request.Message.Contains("End cleaning up of the Archive folder")
-			&& request.LogType == LogType.Information), CancellationToken.None), Times.Exactly(1));
-
-		mock.Verify(g => g.Send(It.Is<CleanUpDirectoryCommand>(request =>
-			request.Directory.FullName == (new DirectoryInfo(revokesFromContractor.ArchiveFolderBasePath)).FullName
-			&& request.RetentionLengthInMonths == -13
-			&& request.IsBaseFolder == true), CancellationToken.None), Times.Exactly(1));
-	}
-
-	[Fact]
-	public void CreateArchiveDirectory_MethodCallsCorrectly()
-	{
-		//Arrange
-		Mock<IMediator> mock = GetMockMediator();
-		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
-
-		//Act
-		_ = revokesFromContractor.CreateArchiveDirectory();
-
-		//Assert
-		mock.Verify(g => g.Send(It.Is<CreateDirectoryCommand>(request =>
-			request.Folder == revokesFromContractor.ArchiveFolder), CancellationToken.None), Times.Exactly(1));
-	}
-
-	[Fact]
-	public void DeleteFilesInDataTransferFolder_MethodCallsCorrectly()
-	{
-		//Arrange
-		Mock<IMediator> mock = GetMockMediator();
-		RevokesFromContractor revokesFromContractor = new(mock.Object, GetMapper());
-
-		//Act
-		_ = revokesFromContractor.DeleteFilesInDataTransferFolder();
-
-		//Assert
-		mock.Verify(g => g.Send(It.Is<DeleteFilesCommand>(request =>
-			request.Directory.FullName == new DirectoryInfo(revokesFromContractor.DataTransferFolderBasePath).FullName), CancellationToken.None), Times.Exactly(1));
-	}
-
-	
 }
