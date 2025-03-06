@@ -116,7 +116,7 @@ public abstract class IncomingFiles(
 
 			foreach (DecryptionFileDto file in Files)
 			{
-				await Mediator.Send(new MoveFileCommand(file.DataTransferGpgFileFullPath, file.ArchiveGpgFileFullPath));
+				await Mediator.Send(new MoveFileCommand(file.DataTransferGpgFileFullPath, ArchiveFolder));
 			}
 
 			await Mediator.Send(new CreateLogCommand("Successfully copied gpg files to archive folder.", LogType.Information));

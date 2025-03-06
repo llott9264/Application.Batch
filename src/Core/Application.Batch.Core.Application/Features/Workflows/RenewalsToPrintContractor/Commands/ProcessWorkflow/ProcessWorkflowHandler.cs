@@ -13,8 +13,8 @@ public class ProcessWorkflowHandler(IMediator mediator, IRenewalsToPrintContract
 	{
 		try
 		{
-			outgoingFiles.CreateArchiveDirectory();
-			outgoingFiles.DeleteFilesInDataTransferFolder();
+			await outgoingFiles.CreateArchiveDirectory();
+			await outgoingFiles.DeleteFilesInDataTransferFolder();
 
 			await mediator.Send(new CreateLogCommand($"{outgoingFiles.BatchName} - Begin generating file for Renewals To Print Contractor.", LogType.Information), cancellationToken);
 
@@ -46,14 +46,14 @@ public class ProcessWorkflowHandler(IMediator mediator, IRenewalsToPrintContract
 				await mediator.Send(new CreateLogCommand($"{outgoingFiles.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
 				//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
 
-				outgoingFiles.MoveArchiveFilesToProcessedFolder();
-				outgoingFiles.MoveArchiveGpgFilesToProcessFolder();
+				await outgoingFiles.MoveArchiveFilesToProcessedFolder();
+				await outgoingFiles.MoveArchiveGpgFilesToProcessedFolder();
 			}
 			else
 			{
 				await mediator.Send(new CreateLogCommand($"{outgoingFiles.BatchName} - Failed to encrypt file for Renewals To Print Contractor.", LogType.Error), cancellationToken);
-				outgoingFiles.MoveArchiveFilesToFailedFolder();
-				outgoingFiles.MoveArchiveGpgFilesToFailedFolder();
+				await outgoingFiles.MoveArchiveFilesToFailedFolder();
+				await outgoingFiles.MoveArchiveGpgFilesToFailedFolder();
 			}
 		}
 		catch (Exception e)

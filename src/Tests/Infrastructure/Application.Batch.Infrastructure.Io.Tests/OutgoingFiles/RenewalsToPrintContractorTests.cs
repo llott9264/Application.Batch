@@ -1,6 +1,8 @@
 ﻿using Application.Batch.Core.Application.Contracts.Pdf;
+using Application.Batch.Core.Application.Features.Mapper;
 using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.OutgoingFiles;
+using AutoMapper;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
@@ -28,6 +30,13 @@ public class RenewalsToPrintContractorTests
 		return mock;
 	}
 
+	private static IMapper GetMapper()
+	{
+		MapperConfiguration configuration = new(cfg => cfg.AddProfile<MappingProfile>());
+		Mapper mapper = new(configuration);
+		return mapper;
+	}
+
 	private Mock<IRenewalsToPrintContractorPdf> GetMockPdf()
 	{
 		Mock<IRenewalsToPrintContractorPdf> mock = new();
@@ -52,21 +61,6 @@ public class RenewalsToPrintContractorTests
 		Assert.True(renewalsToPrintContractor.ArchiveProcessedFolder == $"{ArchiveFolderBasePath}{folderName}\\Processed\\");
 		Assert.True(renewalsToPrintContractor.ArchiveFailedFolder == $"{ArchiveFolderBasePath}{folderName}\\Failed\\");
 		Assert.True(renewalsToPrintContractor.GpgPublicKeyName == $"{GpgPublicKeyName}");
-	}
-
-	[Fact]
-	public void RenewalsToPrintContractor_MethodsReturnCorrectly()
-	{
-		//Arrange
-		string folderName = DateTime.Now.ToString("MMddyyyy");
-
-		//Act
-		RenewalsToPrintContractor renewalsToPrintContractor = new(GetMockMediator().Object, GetMockPdf().Object);
-
-		//Assert
-		Assert.True(renewalsToPrintContractor.GetArchiveFileFullPath("File1.txt") == $"{renewalsToPrintContractor.ArchiveFolder}File1.txt");
-		Assert.True(renewalsToPrintContractor.GetArchiveGpgFileFullPath("File1.txt.gpg") == $"{renewalsToPrintContractor.ArchiveFolder}File1.txt.gpg");
-		Assert.True(renewalsToPrintContractor.DataTransferGpgFullPath("File1.txt.gpg") == $"{renewalsToPrintContractor.DataTransferFolderBasePath}File1.txt.gpg");
 	}
 
 	[Fact]

@@ -2,6 +2,8 @@
 using Application.Batch.Core.Application.Models;
 using MediatR;
 using Utilities.Gpg.MediatR;
+using Utilities.IoOperations.MediatR.File.CopyFile;
+using Utilities.IoOperations.MediatR.File.MoveFile;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
@@ -78,7 +80,7 @@ public abstract class OutgoingFiles(IMediator mediator,
 		}
 	}
 
-	public async Task MoveArchiveGpgFilesToProcessFolder()
+	public async Task MoveArchiveGpgFilesToProcessedFolder()
 	{
 		foreach (EncryptionFileDto file in Files)
 		{
@@ -108,8 +110,13 @@ public abstract class OutgoingFiles(IMediator mediator,
 
 		try
 		{
-			await Mediator.Send(new CreateLogCommand("Begin copying archive files to data transfer.", LogType.Information));
-			Files.ForEach(f => File.Copy(f.ArchiveGpgFileFullPath, f.DataTransferGpgFileFullPath, true));
+			await Mediator.Send(new CreateLogCommand("Begin copying gpg files to data transfer.", LogType.Information));
+			
+			foreach (EncryptionFileDto file in Files)
+			{
+				await Mediator.Send(new CopyFileCommand(file.ArchiveGpgFileFullPath, DataTransferFolderBasePath));
+			}
+
 			await Mediator.Send(new CreateLogCommand("Successfully copied gpg files to data transfer folder.", LogType.Information));
 			isSuccessful = true;
 		}
@@ -118,7 +125,7 @@ public abstract class OutgoingFiles(IMediator mediator,
 			await Mediator.Send(new CreateLogCommand($"Failure to copy archive files to data transfer. Error Message: {e.Message}", LogType.Information));
 		}
 
-		await Mediator.Send(new CreateLogCommand("End copying archive files to data transfer.", LogType.Error));
+		await Mediator.Send(new CreateLogCommand("End copying gpg files to data transfer.", LogType.Information));
 		return isSuccessful;
 	}
 }

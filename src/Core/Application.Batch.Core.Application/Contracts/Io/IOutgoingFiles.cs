@@ -15,7 +15,7 @@ public interface IOutgoingFiles : IFileBase
 	bool DoArchiveFilesExist();
 	Task<bool> CopyGpgFilesToDataTransferFolder();
 	Task MoveArchiveFilesToProcessedFolder();
-	Task MoveArchiveGpgFilesToProcessFolder();
+	Task MoveArchiveGpgFilesToProcessedFolder();
 	Task MoveArchiveFilesToFailedFolder();
 	Task MoveArchiveGpgFilesToFailedFolder();
 }
