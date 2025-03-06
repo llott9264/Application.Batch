@@ -1,6 +1,5 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Domain.Entities;
 using MediatR;
 using Utilities.Logging.EventLog;
@@ -8,7 +7,7 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
 
-public class ProcessWorkflowHandler(IMediator mediator, IRevokesFromContractor incomingFiles, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowCommandHandler(IMediator mediator, IRevokesFromContractor incomingFiles, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{
@@ -23,7 +22,7 @@ public class ProcessWorkflowHandler(IMediator mediator, IRevokesFromContractor i
 				return;
 			}
 
-			incomingFiles.CreateArchiveDirectory();
+			await incomingFiles.CreateArchiveDirectory();
 			await incomingFiles.MoveGpgFilesToArchiveFolder();
 
 			if (!incomingFiles.DoArchiveGpgFilesExist())

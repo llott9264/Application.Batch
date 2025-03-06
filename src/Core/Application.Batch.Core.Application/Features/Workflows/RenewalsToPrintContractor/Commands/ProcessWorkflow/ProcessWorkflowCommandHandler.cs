@@ -7,7 +7,7 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.RenewalsToPrintContractor.Commands.ProcessWorkflow;
 
-public class ProcessWorkflowHandler(IMediator mediator, IRenewalsToPrintContractor outgoingFiles, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowCommandHandler(IMediator mediator, IRenewalsToPrintContractor outgoingFiles, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{

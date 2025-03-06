@@ -17,7 +17,7 @@ public class CustomersFromContractorTests
 {
 	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
 	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
-	private const string GpgPrivateKeyName = "MyPublicKey.asc";
+	private const string GpgPrivateKeyName = "MyPrivateKey.asc";
 	private const string GpgPrivateKeyPassword = "password";
 
 	private static Mock<IMediator> GetMockMediator()
