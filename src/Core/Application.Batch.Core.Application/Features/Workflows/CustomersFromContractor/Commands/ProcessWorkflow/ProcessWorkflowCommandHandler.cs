@@ -7,14 +7,14 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 
-public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor incomingFile, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowCommandHandler(IMediator mediator, ICustomersFromContractor incomingFile, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			incomingFile.CreateArchiveDirectory();
-			incomingFile.MoveToGpgFileToArchiveFolder();
+			await incomingFile.CreateArchiveDirectory();
+			await incomingFile.MoveToGpgFileToArchiveFolder();
 
 			await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
 			
@@ -48,12 +48,16 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomersFromContractor
 					}
 
 					unitOfWork.Complete();
-
 					await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Successfully imported customer data.", LogType.Information), cancellationToken);
+					//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+
+					await incomingFile.MoveArchiveFileToProcessedFolder();
+					await incomingFile.MoveArchiveGpgFileToProcessedFolder();
 				}
 				else
 				{
 					await mediator.Send(new CreateLogCommand($"{incomingFile.BatchName} - Failed to decrypt file.", LogType.Error), cancellationToken);
+					await incomingFile.MoveArchiveGpgFileToFailedFolder();
 				}
 			}
 			else

@@ -30,7 +30,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.OutgoingFiles
 			string folderName = DateTime.Now.ToString("MMddyyyy");
 
 			//Act
-			CustomerToPrintContractor customersFromContractor = new(GetMockMediator().Object);
+			CustomersToPrintContractor customersFromContractor = new(GetMockMediator().Object);
 
 			//Assert
 			Assert.True(customersFromContractor.BatchName == "Customer To Print Contractor");
@@ -51,7 +51,7 @@ namespace Application.Batch.Infrastructure.Io.Tests.OutgoingFiles
 		public void WriteFile_ValidCustomer_ReturnsTrue()
 		{
 			//Arrange
-			CustomerToPrintContractor customerToPrintContractor = new(GetMockMediator().Object);
+			CustomersToPrintContractor customerToPrintContractor = new(GetMockMediator().Object);
 			Directory.CreateDirectory(Path.GetDirectoryName(customerToPrintContractor.ArchiveFileFullPath));
 
 			List<Customer> customers = new()

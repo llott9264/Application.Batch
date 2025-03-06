@@ -7,14 +7,14 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.CustomersToPrintContractor.Commands.ProcessWorkflow;
 
-public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContractor outgoingFile, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
+public class ProcessWorkflowCommandHandler(IMediator mediator, ICustomerToPrintContractor outgoingFile, IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			outgoingFile.CreateArchiveDirectory();
-			outgoingFile.DeleteFilesInDataTransferFolder();
+			await outgoingFile.CreateArchiveDirectory();
+			await outgoingFile.DeleteFilesInDataTransferFolder();
 
 			await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Begin generating file for Customer List.", LogType.Information), cancellationToken);
 
@@ -28,18 +28,17 @@ public class ProcessWorkflowHandler(IMediator mediator, ICustomerToPrintContract
 
 					if (outgoingFile.DoesArchiveGpgFileExist())
 					{
-						outgoingFile.MoveGpgFileToDataTransferFolder();
+						await outgoingFile.MoveGpgFileToDataTransferFolder();
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
 						//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
 
-						outgoingFile.MoveArchiveFileToProcessedFolder();
-						outgoingFile.MoveArchiveGpgFileToProcessFolder();
+						await outgoingFile.MoveArchiveFileToProcessedFolder();
+						await outgoingFile.MoveArchiveGpgFileToProcessedFolder();
 					}
 					else
 					{
 						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
-						outgoingFile.MoveArchiveFileToFailedFolder();
-						outgoingFile.MoveArchiveGpgFileToFailedFolder();
+						await outgoingFile.MoveArchiveFileToFailedFolder();
 					}
 				}
 				else

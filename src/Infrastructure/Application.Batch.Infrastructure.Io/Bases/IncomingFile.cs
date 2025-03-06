@@ -22,19 +22,39 @@ public abstract class IncomingFile(
 	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}{GpgFileName}";
 	public bool DoesArchiveFileExist()
 	{
-		throw new NotImplementedException();
+		return File.Exists(ArchiveFileFullPath);
 	}
 	public bool DoesArchiveGpgFileExist()
 	{
-		throw new NotImplementedException();
+		return File.Exists(ArchiveGpgFileFullPath);
 	}
 	public async Task DecryptFile()
 	{
 		await Mediator.Send(new DecryptFileCommand(ArchiveGpgFileFullPath, ArchiveFileFullPath, GpgPrivateKeyName, GpgPrivateKeyPassword));
 	}
 
+	public async Task MoveArchiveFileToProcessedFolder()
+	{
+		await MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
+	}
+
+	public async Task MoveArchiveFileToFailedFolder()
+	{
+		await MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
+	}
+
+	public async Task MoveArchiveGpgFileToProcessedFolder()
+	{
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+	}
+
+	public Task MoveArchiveGpgFileToFailedFolder()
+	{
+		throw new NotImplementedException();
+	}
+
 	public async Task MoveToGpgFileToArchiveFolder()
 	{
-		await MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
 	}
 }

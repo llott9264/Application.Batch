@@ -6,4 +6,9 @@ public interface IIncomingFile : IFileBase
 	public bool DoesArchiveGpgFileExist();
 	public bool DoesArchiveFileExist();
 	public Task DecryptFile();
+
+	public Task MoveArchiveFileToProcessedFolder();
+	public Task MoveArchiveFileToFailedFolder();
+	public Task MoveArchiveGpgFileToProcessedFolder();
+	public Task MoveArchiveGpgFileToFailedFolder();
 }

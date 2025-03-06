@@ -57,7 +57,7 @@ public class IoServiceRegistrationTests
 
 		// Assert
 		Assert.NotNull(customerToPrint);
-		Assert.IsType<CustomerToPrintContractor>(customerToPrint);
+		Assert.IsType<CustomersToPrintContractor>(customerToPrint);
 
 		Assert.NotNull(renewalsToPrint);
 		Assert.IsType<RenewalsToPrintContractor>(renewalsToPrint);

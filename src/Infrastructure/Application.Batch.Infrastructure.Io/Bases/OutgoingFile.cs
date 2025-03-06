@@ -1,6 +1,7 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using MediatR;
 using Utilities.Gpg.MediatR;
+using Utilities.IoOperations.MediatR.File.CopyFile;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 
@@ -33,9 +34,9 @@ public abstract class OutgoingFile(
 	{
 		return File.Exists(ArchiveGpgFileFullPath);
 	}
-	public void MoveGpgFileToDataTransferFolder()
+	public async Task MoveGpgFileToDataTransferFolder()
 	{
-		File.Copy(ArchiveGpgFileFullPath, DataTransferGpgFullPath);
+		await Mediator.Send(new CopyFileCommand(ArchiveGpgFileFullPath, DataTransferFolderBasePath));
 	}
 
 	public async Task MoveArchiveFileToProcessedFolder()
@@ -43,7 +44,7 @@ public abstract class OutgoingFile(
 		await MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public async Task MoveArchiveGpgFileToProcessFolder()
+	public async Task MoveArchiveGpgFileToProcessedFolder()
 	{
 		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 	}
