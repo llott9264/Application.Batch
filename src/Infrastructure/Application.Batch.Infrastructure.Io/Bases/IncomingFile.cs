@@ -48,13 +48,13 @@ public abstract class IncomingFile(
 		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public Task MoveArchiveGpgFileToFailedFolder()
+	public async Task MoveArchiveGpgFileToFailedFolder()
 	{
-		throw new NotImplementedException();
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
 	}
 
 	public async Task MoveToGpgFileToArchiveFolder()
 	{
-		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
+		await MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
 	}
 }

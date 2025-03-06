@@ -26,7 +26,7 @@ public class OutgoingFileTests
 	}
 
 	[Fact]
-	public void DoesArchiveFileExist_TessFileExistsAndDoesNotExist_ReturnsTrue()
+	public void DoesArchiveFileExist_TestFileExistsAndDoesNotExist_ReturnsTrue()
 	{
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
@@ -62,7 +62,7 @@ public class OutgoingFileTests
 	}
 
 	[Fact]
-	public void DoesArchiveGpgFileExist_TessFileExistsAndDoesNotExist_ReturnsTrue()
+	public void DoesArchiveGpgFileExist_TestFileExistsAndDoesNotExist_ReturnsTrue()
 	{
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
