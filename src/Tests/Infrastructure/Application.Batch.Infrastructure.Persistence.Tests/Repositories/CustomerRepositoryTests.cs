@@ -2,7 +2,7 @@ using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Persistence.Repositories;
 using Moq;
 
-namespace Application.Batch.Infrastructure.Persistence.Tests
+namespace Application.Batch.Infrastructure.Persistence.Tests.Repositories
 {
 	public class CustomerRepositoryTests
 	{

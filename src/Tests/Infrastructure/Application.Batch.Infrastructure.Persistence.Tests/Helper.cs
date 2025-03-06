@@ -1,7 +1,9 @@
 ﻿using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using MockQueryable.Moq;
 using Moq;
+using System.Threading;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
 
@@ -15,6 +17,10 @@ internal class Helper
 			mockContext.Setup(m => m.Addresses).Returns(GetAddresses().Object);
 			mockContext.Setup(m => m.Set<Customer>()).Returns(GetCustomers().Object);
 			mockContext.Setup(m => m.Set<Address>()).Returns(GetAddresses().Object);
+			mockContext.Setup(m => m.SaveChanges()).Returns(2);
+			mockContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(3));
+			mockContext.Setup(m => m.Dispose());
+			//TODO: set up Database Facade
 			return mockContext;
 		}
 	}
