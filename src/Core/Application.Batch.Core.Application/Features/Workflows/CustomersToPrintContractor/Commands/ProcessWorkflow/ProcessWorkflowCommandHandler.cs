@@ -20,35 +20,33 @@ public class ProcessWorkflowCommandHandler(IMediator mediator, ICustomerToPrintC
 
 			List<Customer> customers = unitOfWork.Customers.GetAll();
 
-			if (customers.Count > 0)
+			if (customers.Count == 0)
 			{
-				if (outgoingFile.WriteFile(customers))
-				{
-					await outgoingFile.EncryptFile();
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - No customers were found. File not generated.", LogType.Warning), cancellationToken);
+				return;
+			}
 
-					if (outgoingFile.DoesArchiveGpgFileExist())
-					{
-						await outgoingFile.MoveGpgFileToDataTransferFolder();
-						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
-						//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+			if (!outgoingFile.WriteFile(customers))
+			{
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to write Customer file.", LogType.Error), cancellationToken);
+				return;
+			}
 
-						await outgoingFile.MoveArchiveFileToProcessedFolder();
-						await outgoingFile.MoveArchiveGpgFileToProcessedFolder();
-					}
-					else
-					{
-						await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
-						await outgoingFile.MoveArchiveFileToFailedFolder();
-					}
-				}
-				else
-				{
-					await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to write Customer file.", LogType.Error), cancellationToken);
-				}
+			await outgoingFile.EncryptFile();
+
+			if (outgoingFile.DoesArchiveGpgFileExist())
+			{
+				await outgoingFile.CopyGpgFileToDataTransferFolder();
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Successfully completed workflow.", LogType.Information), cancellationToken);
+				//await mediator.Send(new SendEmailCommand("", "", "", "", ";"), cancellationToken);
+
+				await outgoingFile.MoveArchiveFileToProcessedFolder();
+				await outgoingFile.MoveArchiveGpgFileToProcessedFolder();
 			}
 			else
 			{
-				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - No customers were found. File not generated.", LogType.Warning), cancellationToken);
+				await mediator.Send(new CreateLogCommand($"{outgoingFile.BatchName} - Failed to encrypt Customer file.", LogType.Error), cancellationToken);
+				await outgoingFile.MoveArchiveFileToFailedFolder();
 			}
 		}
 		catch (Exception e)

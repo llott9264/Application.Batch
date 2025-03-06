@@ -34,7 +34,7 @@ public abstract class OutgoingFile(
 	{
 		return File.Exists(ArchiveGpgFileFullPath);
 	}
-	public async Task MoveGpgFileToDataTransferFolder()
+	public async Task CopyGpgFileToDataTransferFolder()
 	{
 		await Mediator.Send(new CopyFileCommand(ArchiveGpgFileFullPath, DataTransferFolderBasePath));
 	}

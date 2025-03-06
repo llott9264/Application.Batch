@@ -13,8 +13,8 @@ namespace Application.Batch.Infrastructure.Io.Tests.OutgoingFiles;
 
 public class RenewalsToPrintContractorTests
 {
-	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
-	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
+	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\RenewalsToPrintContractor\\";
+	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\RenewalsToPrintContracotr\\";
 	private const string GpgPublicKeyName = "MyPublicKey.asc";
 	private const string PdfTemplatePath = "MyPdfTemplate.pdf";
 	private const string DocumentsPerFile = "1";

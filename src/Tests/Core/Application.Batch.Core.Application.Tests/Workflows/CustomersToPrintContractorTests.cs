@@ -1,42 +1,34 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Contracts.Pdf;
 using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Application.Features.Mapper;
-using Application.Batch.Core.Application.Features.Workflows.RenewalsToPrintContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Application.Models;
+using Application.Batch.Core.Application.Features.Workflows.CustomersToPrintContractor.Commands.ProcessWorkflow;
 using Application.Batch.Core.Domain.Entities;
-using AutoMapper;
+using Castle.Components.DictionaryAdapter;
 using MediatR;
 using Moq;
-using System.Linq.Expressions;
 using Utilities.Configuration.MediatR;
 using Utilities.Logging.EventLog.MediatR;
 using Utilities.Logging.EventLog;
 
 namespace Application.Batch.Core.Application.Tests.Workflows;
 
-public class RenewalsToPrintContractorTests
+public class CustomersToPrintContractorTests
 {
 	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
 	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
 	private const string GpgPublicKeyName = "MyPublicKey.asc";
-	private const string PdfTemplatePath = "MyPdfTemplate.pdf";
-	private const string DocumentsPerFile = "1";
 
 	private Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:PublicKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPublicKeyName));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "WWorkflows:RenewalsToPrintContractor:PdfTemplatePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(PdfTemplatePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DocumentsPerFile));
+		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:PublicKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPublicKeyName));
 		return mock;
 	}
 
-	private static Mock<IRenewalsToPrintContractor> GetMockWorkflow()
+	private static Mock<ICustomerToPrintContractor> GetMockWorkflow()
 	{
-		Mock<IRenewalsToPrintContractor> mock = new();
+		Mock<ICustomerToPrintContractor> mock = new();
 		return mock;
 	}
 
@@ -60,22 +52,16 @@ public class RenewalsToPrintContractorTests
 				IsRevoked = false
 			}
 		];
-
-		List<EncryptionFileDto> filesToEncrypt =
-			[new(ArchiveFolderBasePath, DataTransferFolderBasePath, "File1.txt")];
-
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
 		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
+		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(m => m.Files).Returns(filesToEncrypt);
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(true);
+		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
+		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
@@ -84,12 +70,12 @@ public class RenewalsToPrintContractorTests
 		await handler.Handle(command, CancellationToken.None);
 
 		//Assert
-		mockWorkflow.Verify(g => g.CopyGpgFilesToDataTransferFolder(), Times.Once);
-		mockWorkflow.Verify(g => g.MoveArchiveFilesToProcessedFolder(), Times.Once);
-		mockWorkflow.Verify(g => g.MoveArchiveGpgFilesToProcessedFolder(), Times.Once);
-		
+		mockWorkflow.Verify(g => g.CopyGpgFileToDataTransferFolder(), Times.Once);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Once);
+		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Once);
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Begin generating file for Customer List.")
 				&& request.LogType == LogType.Information),
 			CancellationToken.None), Times.Once);
 
@@ -109,18 +95,16 @@ public class RenewalsToPrintContractorTests
 	{
 		//Arrange
 		List<Customer> customers = new();
-		
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
 		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
+		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(true);
+		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
+		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
@@ -129,13 +113,17 @@ public class RenewalsToPrintContractorTests
 		await handler.Handle(command, CancellationToken.None);
 
 		//Assert
+		mockWorkflow.Verify(g => g.CopyGpgFileToDataTransferFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Never);
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Begin generating file for Customer List.")
 				&& request.LogType == LogType.Information),
 			CancellationToken.None), Times.Once);
 
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("No customers were found. Files not generated.")
+				request.Message.Contains("No customers were found.")
 				&& request.LogType == LogType.Warning),
 			CancellationToken.None), Times.Once);
 
@@ -146,7 +134,7 @@ public class RenewalsToPrintContractorTests
 	}
 
 	[Fact]
-	public async Task CallHandleMethod_WriteFilesReturnsFalse_MethodCompletesSuccessfully()
+	public async Task CallHandleMethod_WriteFileReturnsFalse_MethodCompletesSuccessfully()
 	{
 		//Arrange
 		List<Customer> customers =
@@ -159,18 +147,16 @@ public class RenewalsToPrintContractorTests
 				IsRevoked = false
 			}
 		];
-
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
 		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
+		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(false);
+		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
+		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(false);
 
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
@@ -179,13 +165,17 @@ public class RenewalsToPrintContractorTests
 		await handler.Handle(command, CancellationToken.None);
 
 		//Assert
+		mockWorkflow.Verify(g => g.CopyGpgFileToDataTransferFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Never);
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Begin generating file for Customer List.")
 				&& request.LogType == LogType.Information),
 			CancellationToken.None), Times.Once);
 
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Failed to write files for Renewals To Print Contractor.")
+				request.Message.Contains("Failed to write Customer file.")
 				&& request.LogType == LogType.Error),
 			CancellationToken.None), Times.Once);
 
@@ -196,7 +186,7 @@ public class RenewalsToPrintContractorTests
 	}
 
 	[Fact]
-	public async Task CallHandleMethod_DoArchiveFilesExistReturnsFalse_MethodCompletesSuccessfully()
+	public async Task CallHandleMethod_DoesArchiveGpgFileExistReturnsFalse_MethodCompletesSuccessfully()
 	{
 		//Arrange
 		List<Customer> customers =
@@ -209,18 +199,16 @@ public class RenewalsToPrintContractorTests
 				IsRevoked = false
 			}
 		];
-
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
 		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
+		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(false);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(true);
+		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(false);
+		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
@@ -229,63 +217,19 @@ public class RenewalsToPrintContractorTests
 		await handler.Handle(command, CancellationToken.None);
 
 		//Assert
+		mockWorkflow.Verify(g => g.CopyGpgFileToDataTransferFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToFailedFolder(), Times.Once);
+		
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Begin generating file for Customer List.")
 				&& request.LogType == LogType.Information),
 			CancellationToken.None), Times.Once);
 
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Failed to find files for Renewals To Print Contractor.")
-				&& request.LogType == LogType.Error),
-			CancellationToken.None), Times.Once);
-
-		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("End generating file for Customer List.")
-				&& request.LogType == LogType.Information),
-			CancellationToken.None), Times.Once);
-	}
-
-	[Fact]
-	public async Task CallHandleMethod_DoArchiveGpgFilesExistReturnsFalse_MethodCompletesSuccessfully()
-	{
-		//Arrange
-		List<Customer> customers =
-		[
-			new()
-			{
-				FirstName = "John",
-				LastName = "Smith",
-				SocialSecurityNumber = "123456789",
-				IsRevoked = false
-			}
-		];
-
-		Mock<IMediator> mockMediator = GetMockMediator();
-
-		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
-		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
-		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
-
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(false);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(true);
-
-		ProcessWorkflowCommand command = new();
-		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
-
-		//Act
-		await handler.Handle(command, CancellationToken.None);
-
-		//Assert
-		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
-				&& request.LogType == LogType.Information),
-			CancellationToken.None), Times.Once);
-
-		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Failed to encrypt file for Renewals To Print Contractor.")
+				request.Message.Contains("Failed to encrypt Customer file.")
 				&& request.LogType == LogType.Error),
 			CancellationToken.None), Times.Once);
 
@@ -309,19 +253,17 @@ public class RenewalsToPrintContractorTests
 				IsRevoked = false
 			}
 		];
-
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
 		Mock<ICustomerRepository> customerRepository = new();
-		customerRepository.Setup(m => m.GetCustomersIncludeAddresses()).Returns(customers);
+		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<IRenewalsToPrintContractor> mockWorkflow = GetMockWorkflow();
-		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(true);
-		mockWorkflow.Setup(w => w.WriteFiles(customers)).Returns(true);
-		mockWorkflow.Setup(w => w.EncryptFiles()).Throws(new Exception());
+		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
+		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
+		mockWorkflow.Setup(w => w.EncryptFile()).Throws(new Exception());
 
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, mockUnitOfWork.Object);
@@ -330,13 +272,17 @@ public class RenewalsToPrintContractorTests
 		await handler.Handle(command, CancellationToken.None);
 
 		//Assert
+		mockWorkflow.Verify(g => g.CopyGpgFileToDataTransferFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Never);
+		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Never);
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Begin generating file for Customer List.")
 				&& request.LogType == LogType.Information),
 			CancellationToken.None), Times.Once);
 
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
-				request.Message.Contains("Error occurred generating file for Renewals To Print Contractor.")
+				request.Message.Contains("Error occurred generating Customer List.")
 				&& request.LogType == LogType.Error),
 			CancellationToken.None), Times.Once);
 

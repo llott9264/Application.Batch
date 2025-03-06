@@ -12,8 +12,8 @@ namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.CustomersFromC
 {
 	public class CustomersFromContractorTests
 	{
-		private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
-		private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
+		private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\CustomersFromContractor\\";
+		private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\CustomersFromContractor\\";
 		private const string GpgPrivateKeyName = "MyPublicKey.asc";
 		private const string GpgPrivateKeyPassword = "password";
 

@@ -3,15 +3,13 @@ using Application.Batch.Infrastructure.Io.OutgoingFiles;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
-using Utilities.Logging.EventLog;
-using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Tests.OutgoingFiles
 {
-	public class CustomerToPrintContractorTests
+	public class CustomersToPrintContractorTests
 	{
-		private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
-		private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
+		private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\CustomersToPrintContractor\\";
+		private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\CustomersToPrintContractor\\";
 		private const string GpgPublicKeyName = "MyPublicKey.asc";
 
 		private Mock<IMediator> GetMockMediator()

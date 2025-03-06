@@ -172,7 +172,7 @@ public class OutgoingFileTests
 		CustomersToPrintContractor customerToPrintContractor = new(mock.Object);
 
 		//Act
-		_ = customerToPrintContractor.MoveGpgFileToDataTransferFolder();
+		_ = customerToPrintContractor.CopyGpgFileToDataTransferFolder();
 
 		//Assert
 		mock.Verify(g => g.Send(It.Is<CopyFileCommand>(request =>

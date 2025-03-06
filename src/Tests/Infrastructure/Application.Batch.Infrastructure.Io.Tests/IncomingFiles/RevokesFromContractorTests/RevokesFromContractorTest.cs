@@ -1,6 +1,5 @@
 ﻿using Application.Batch.Core.Application.Features.Mapper;
 using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Application.Models;
 using Application.Batch.Infrastructure.Io.IncomingFiles;
 using AutoMapper;
 using MediatR;
@@ -8,15 +7,13 @@ using Moq;
 using Utilities.Configuration.MediatR;
 using Utilities.Logging.EventLog.MediatR;
 using Utilities.Logging.EventLog;
-using Utilities.Gpg.MediatR;
-using Utilities.IoOperations.MediatR.File.MoveFile;
 
 namespace Application.Batch.Infrastructure.Io.Tests.IncomingFiles.RevokesFromContractorTests;
 
 public class RevokesFromContractorTest
 {
-	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\";
-	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\";
+	private const string ArchiveFolderBasePath = "MyArchiveFolderPath\\RevokesFromContractor\\";
+	private const string DataTransferFolderBasePath = "MyDataTransferFolderPath\\RevokesFromContractor\\";
 	private const string GpgPrivateKeyName = "MyPublicKey.asc";
 	private const string GpgPrivateKeyPassword = "password";
 
