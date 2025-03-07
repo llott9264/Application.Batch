@@ -1,9 +1,7 @@
 ﻿using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using MockQueryable.Moq;
 using Moq;
-using System.Threading;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
 

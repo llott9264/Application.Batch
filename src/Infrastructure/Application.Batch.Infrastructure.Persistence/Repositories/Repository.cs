@@ -1,17 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Application.Batch.Core.Application.Contracts.Persistence;
+using Application.Batch.Core.Domain.Common;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public abstract class Repository<T>(IDbContext context) : IRepository<T> where T : Entity
 {
-	protected readonly IDbContext Context;
-
-	protected Repository(IDbContext context)
-	{
-		Context = context;
-	}
+	protected readonly IDbContext Context = context;
 
 	public T? GetById(int id)
 	{
