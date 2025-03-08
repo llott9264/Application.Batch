@@ -1,6 +1,4 @@
-﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Contracts.Pdf;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +10,7 @@ namespace Application.Batch.Core.Application.Tests;
 
 public class ApplicationServiceRegistrationTests
 {
-	private IConfigurationRoot _configuration = new ConfigurationBuilder()
+	private readonly IConfigurationRoot _configuration = new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string>
 		{
 			{
