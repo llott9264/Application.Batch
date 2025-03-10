@@ -9,7 +9,7 @@ public class AddressRepositoryTests
 	[Fact]
 	public void GetAll_ReturnsAllAddresses()
 	{
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		AddressRepository addressRepository = new(mockContext.Object);
 		List<Address> addresses = addressRepository.GetAll();
 

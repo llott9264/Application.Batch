@@ -9,7 +9,7 @@ public class UnitOfWorkTests
 	public async Task CustomerRepository_IsCustomerSocialSecurityNumberUnique_ReturnsTrue()
 	{
 		//Arrange
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		UnitOfWork unitOfWork = new(mockContext.Object);
 		
 		//Act
@@ -23,7 +23,7 @@ public class UnitOfWorkTests
 	public void AddressRepository_GetAllAddresses_ReturnsTwo()
 	{
 		//Arrange
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		UnitOfWork unitOfWork = new(mockContext.Object);
 
 		//Act
@@ -37,7 +37,7 @@ public class UnitOfWorkTests
 	public void Complete_ReturnsTwo()
 	{
 		//Arrange
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		UnitOfWork unitOfWork = new(mockContext.Object);
 
 		//Act
@@ -51,7 +51,7 @@ public class UnitOfWorkTests
 	public async Task CompleteAsync_ReturnsThree()
 	{
 		//Arrange
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		UnitOfWork unitOfWork = new(mockContext.Object);
 
 		//Act
@@ -65,7 +65,7 @@ public class UnitOfWorkTests
 	public void Dispose()
 	{
 		//Arrange
-		Mock<IDbContext> mockContext = Helper.MockContext();
+		Mock<IDbContext> mockContext = new Helper().MockContext();
 		UnitOfWork unitOfWork = new(mockContext.Object);
 
 		//Act

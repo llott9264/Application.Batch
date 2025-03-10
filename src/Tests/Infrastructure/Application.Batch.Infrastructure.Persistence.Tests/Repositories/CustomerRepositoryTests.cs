@@ -9,7 +9,7 @@ namespace Application.Batch.Infrastructure.Persistence.Tests.Repositories
 		[Fact]
 		public async Task IsSsnUnique_UniqueCustomerSsn_ReturnsTrue()
 		{
-			Mock<IDbContext> mockContext = Helper.MockContext();
+			Mock<IDbContext> mockContext = new Helper().MockContext();
 			CustomerRepository customerRepository = new(mockContext.Object);
 			bool isUnique = await customerRepository.IsCustomerSocialSecurityNumberUnique("123456789", 6);
 
@@ -19,7 +19,7 @@ namespace Application.Batch.Infrastructure.Persistence.Tests.Repositories
 		[Fact]
 		public async Task IsSsnUnique_NonUniqueCustomerSsn_ReturnsFalse()
 		{
-			Mock<IDbContext> mockContext = Helper.MockContext();
+			Mock<IDbContext> mockContext = new Helper().MockContext();
 			CustomerRepository customerRepository = new(mockContext.Object);
 			bool isUnique = await customerRepository.IsCustomerSocialSecurityNumberUnique("123456789", 1);
 
@@ -29,7 +29,7 @@ namespace Application.Batch.Infrastructure.Persistence.Tests.Repositories
 		[Fact]
 		public void GetCustomers_ReturnsTrue()
 		{
-			Mock<IDbContext> mockContext = Helper.MockContext();
+			Mock<IDbContext> mockContext = new Helper().MockContext();
 			CustomerRepository customerRepository = new(mockContext.Object);
 			List<Customer> customers = customerRepository.GetCustomersIncludeAddresses();
 

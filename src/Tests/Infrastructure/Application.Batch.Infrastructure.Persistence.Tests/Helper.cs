@@ -7,14 +7,17 @@ namespace Application.Batch.Infrastructure.Persistence.Tests;
 
 internal class Helper
 {
-	internal static Mock<IDbContext> MockContext()
+	private readonly Mock<DbSet<Customer>> _dbSetCustomer = GetCustomers();
+	private readonly Mock<DbSet<Address>> _dbSetAddress = GetAddresses();
+
+	internal Mock<IDbContext> MockContext()
 	{
 		{
 			Mock<IDbContext> mockContext = new();
-			mockContext.Setup(m => m.Customers).Returns(GetCustomers().Object);
-			mockContext.Setup(m => m.Addresses).Returns(GetAddresses().Object);
-			mockContext.Setup(m => m.Set<Customer>()).Returns(GetCustomers().Object);
-			mockContext.Setup(m => m.Set<Address>()).Returns(GetAddresses().Object);
+			mockContext.Setup(m => m.Customers).Returns(_dbSetCustomer.Object);
+			mockContext.Setup(m => m.Addresses).Returns(_dbSetAddress.Object);
+			mockContext.Setup(m => m.Set<Customer>()).Returns(_dbSetCustomer.Object);
+			mockContext.Setup(m => m.Set<Address>()).Returns(_dbSetAddress.Object);
 			mockContext.Setup(m => m.SaveChanges()).Returns(2);
 			mockContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(3));
 			mockContext.Setup(m => m.Dispose());
@@ -82,7 +85,14 @@ internal class Helper
 				Street = "123 Main Street",
 				City = "Walker",
 				State = "LA",
-				ZipCode = "70785"
+				ZipCode = "70785",
+				Customer = new()
+				{
+					Id = 6,
+					FirstName = "John",
+					LastName = "Doe",
+					SocialSecurityNumber = "123456789",
+				}
 			},
 
 			new()
@@ -92,7 +102,14 @@ internal class Helper
 				Street = "456 Sunset Blvd.",
 				City = "Baton Rouge",
 				State = "LA",
-				ZipCode = "70816"
+				ZipCode = "70816",
+				Customer = new()
+				{
+					Id = 5,
+					FirstName = "Joe",
+					LastName = "Jones",
+					SocialSecurityNumber = "987654321",
+				}
 			}
 		];
 
