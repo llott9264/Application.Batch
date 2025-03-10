@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 
-public class ProcessWorkflowCommand(WorkflowName workflowName) : IRequest
+public class WorkflowRunnerCommand(WorkflowName workflowName) : IRequest
 {
 	public WorkflowName WorkflowName { get; } = workflowName;
 }

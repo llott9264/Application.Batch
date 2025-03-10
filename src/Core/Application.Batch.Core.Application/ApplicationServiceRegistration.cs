@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Utilities.Configuration;
 using Utilities.Email;
 using Utilities.Gpg;
 using Utilities.Logging.EventLog;
@@ -12,6 +13,7 @@ public static class ApplicationServiceRegistration
 	{
 		services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+		services.AddConfigurationServices();
 		services.AddLoggerServices(configuration);
 		services.AddEmailServices();
 		services.AddGpgServices();

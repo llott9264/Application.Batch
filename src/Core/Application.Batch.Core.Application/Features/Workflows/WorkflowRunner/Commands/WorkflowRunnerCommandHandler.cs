@@ -1,13 +1,14 @@
 ﻿using Application.Batch.Core.Application.Enums;
+using Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 using MediatR;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
-namespace Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
+namespace Application.Batch.Core.Application.Features.Workflows.WorkflowRunner.Commands;
 
-public class ProcessWorkflowCommandHandler(IMediator mediator) : IRequestHandler<ProcessWorkflowCommand>
+public class WorkflowRunnerCommandHandler(IMediator mediator) : IRequestHandler<WorkflowRunnerCommand>
 {
-	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)
+	public async Task Handle(WorkflowRunnerCommand request, CancellationToken cancellationToken)
 	{
 		switch (request.WorkflowName)
 		{

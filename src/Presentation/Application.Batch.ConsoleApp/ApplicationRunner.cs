@@ -6,7 +6,7 @@ using Utilities.Logging.EventLog;
 
 namespace Application.Batch.ConsoleApp;
 
-public class WorkflowRunner(IMediator? mediator)
+public class ApplicationRunner(IMediator? mediator)
 {
 	public async Task RunAsync(string[] args)
 	{
@@ -20,7 +20,7 @@ public class WorkflowRunner(IMediator? mediator)
 
 		if (Enum.TryParse(workFlowName, out WorkflowName workflowEnum))
 		{
-			await mediator.Send(new ProcessWorkflowCommand(workflowEnum));
+			await mediator.Send(new WorkflowRunnerCommand(workflowEnum));
 		}
 		else
 		{

@@ -1,5 +1,6 @@
 ﻿using Application.Batch.Core.Application.Enums;
 using Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
+using Application.Batch.Core.Application.Features.Workflows.WorkflowRunner.Commands;
 using MediatR;
 using Moq;
 using Utilities.Logging.EventLog.MediatR;
@@ -13,8 +14,8 @@ public class ApplicationWorkflowTests
 	{
 		//Arrange
 		Mock<IMediator> mock = new();
-		ProcessWorkflowCommand request = new((WorkflowName)999);
-		ProcessWorkflowCommandHandler handler = new(mock.Object);
+		WorkflowRunnerCommand request = new((WorkflowName)999);
+		WorkflowRunnerCommandHandler handler = new(mock.Object);
 		//Act
 		_ = handler.Handle(request, CancellationToken.None);
 		//Assert
@@ -27,8 +28,8 @@ public class ApplicationWorkflowTests
 	{
 		//Arrange
 		Mock<IMediator> mock = new();
-		ProcessWorkflowCommand request = new(WorkflowName.CustomersToPrintContractor);
-		ProcessWorkflowCommandHandler handler = new(mock.Object);
+		WorkflowRunnerCommand request = new(WorkflowName.CustomersToPrintContractor);
+		WorkflowRunnerCommandHandler handler = new(mock.Object);
 		//Act
 		_ = handler.Handle(request, CancellationToken.None);
 		//Assert
@@ -41,8 +42,8 @@ public class ApplicationWorkflowTests
 	{
 		//Arrange
 		Mock<IMediator> mock = new();
-		ProcessWorkflowCommand request = new(WorkflowName.CustomersFromContractor);
-		ProcessWorkflowCommandHandler handler = new(mock.Object);
+		WorkflowRunnerCommand request = new(WorkflowName.CustomersFromContractor);
+		WorkflowRunnerCommandHandler handler = new(mock.Object);
 		//Act
 		_ = handler.Handle(request, CancellationToken.None);
 		//Assert
@@ -55,8 +56,8 @@ public class ApplicationWorkflowTests
 	{
 		//Arrange
 		Mock<IMediator> mock = new();
-		ProcessWorkflowCommand request = new(WorkflowName.RenewalsToPrintContractor);
-		ProcessWorkflowCommandHandler handler = new(mock.Object);
+		WorkflowRunnerCommand request = new(WorkflowName.RenewalsToPrintContractor);
+		WorkflowRunnerCommandHandler handler = new(mock.Object);
 		//Act
 		_ = handler.Handle(request, CancellationToken.None);
 		//Assert
@@ -69,8 +70,8 @@ public class ApplicationWorkflowTests
 	{
 		//Arrange
 		Mock<IMediator> mock = new();
-		ProcessWorkflowCommand request = new(WorkflowName.RevokesFromContractor);
-		ProcessWorkflowCommandHandler handler = new(mock.Object);
+		WorkflowRunnerCommand request = new(WorkflowName.RevokesFromContractor);
+		WorkflowRunnerCommandHandler handler = new(mock.Object);
 		//Act
 		_ = handler.Handle(request, CancellationToken.None);
 		//Assert

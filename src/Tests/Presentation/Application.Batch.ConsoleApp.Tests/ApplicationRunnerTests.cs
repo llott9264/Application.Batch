@@ -7,12 +7,12 @@ using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.ConsoleApp.Tests
 {
-	public class WorkflowRunnerTests
+	public class ApplicationRunnerTests
 	{
 		private static Mock<IMediator> GetMockMediator()
 		{
 			Mock<IMediator> mock = new();
-			mock.Setup(m => m.Send(It.IsAny<ProcessWorkflowCommand>(), CancellationToken.None))
+			mock.Setup(m => m.Send(It.IsAny<WorkflowRunnerCommand>(), CancellationToken.None))
 				.Returns(Task.CompletedTask);
 			return mock;
 		}
@@ -22,14 +22,14 @@ namespace Application.Batch.ConsoleApp.Tests
 		{
 			// Arrange
 			Mock<IMediator> mockMediator = GetMockMediator();
-			WorkflowRunner runner = new(mockMediator.Object);
+			ApplicationRunner runner = new(mockMediator.Object);
 			string[] args = ["CustomersToPrintContractor"];
 			
 			// Act
 			await runner.RunAsync(args);
 
 			// Assert
-			mockMediator.Verify(m => m.Send(It.Is<ProcessWorkflowCommand>(
+			mockMediator.Verify(m => m.Send(It.Is<WorkflowRunnerCommand>(
 				cmd => cmd.WorkflowName == WorkflowName.CustomersToPrintContractor),
 				CancellationToken.None), Times.Once);
 
@@ -41,7 +41,7 @@ namespace Application.Batch.ConsoleApp.Tests
 		{
 			// Arrange
 			Mock<IMediator> mockMediator = GetMockMediator();
-			WorkflowRunner runner = new(mockMediator.Object);
+			ApplicationRunner runner = new(mockMediator.Object);
 			string[] args = ["Invalid"];
 
 			// Act
@@ -61,7 +61,7 @@ namespace Application.Batch.ConsoleApp.Tests
 		{
 			// Arrange
 			Mock<IMediator> mockMediator = GetMockMediator();
-			WorkflowRunner runner = new(mockMediator.Object);
+			ApplicationRunner runner = new(mockMediator.Object);
 			string[] args = [];
 	
 			// Act
@@ -78,7 +78,7 @@ namespace Application.Batch.ConsoleApp.Tests
 		public async Task Constructor_WithNullMediator_ThrowsArgumentNullException()
 		{
 			// Arrange
-			WorkflowRunner runner = new(null);
+			ApplicationRunner runner = new(null);
 			string[] args = [];
 
 			// Act & Assert
@@ -91,8 +91,8 @@ namespace Application.Batch.ConsoleApp.Tests
 		{
 			// Arrange
 			Mock<IMediator> mock = GetMockMediator();
-			mock.Setup(m => m.Send(It.IsAny<ProcessWorkflowCommand>(), CancellationToken.None)).Returns(Task.CompletedTask);
-			WorkflowRunner runner = new(mock.Object);
+			mock.Setup(m => m.Send(It.IsAny<WorkflowRunnerCommand>(), CancellationToken.None)).Returns(Task.CompletedTask);
+			ApplicationRunner runner = new(mock.Object);
 			string[] args = ["CustomersToPrintContractor"];
 			Environment.SetEnvironmentVariable("ITEXT_BOUNCY_CASTLE_FACTORY_NAME", null); // Clear it first
 

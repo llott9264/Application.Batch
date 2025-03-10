@@ -13,7 +13,7 @@ public static class Program
 		IHost host = StartupExtensions.BuildHost(configuration);
 		IMediator? mediator = host.Services.GetService<IMediator>();
 
-		WorkflowRunner runner = new(mediator);
+		ApplicationRunner runner = new(mediator);
 		await runner.RunAsync(args);
 	}
 }
