@@ -2,9 +2,14 @@
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Utilities.Configuration.MediatR;
 using Utilities.Email;
+using Utilities.Email.MediatR;
 using Utilities.Gpg;
+using Utilities.Gpg.MediatR;
 using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Tests;
 
@@ -27,7 +32,7 @@ public class ApplicationServiceRegistrationTests
 		.Build();
 
 	[Fact]
-	public void AddIoServices_RegistersAllServices_CorrectlyResolvesTypes()
+	public void AddApplicationServices_RegistersAllServices_CorrectlyResolvesTypes()
 	{
 		// Arrange
 		ServiceCollection services = new();
@@ -61,7 +66,7 @@ public class ApplicationServiceRegistrationTests
 	}
 
 	[Fact]
-	public void AddIoServices_ReturnsServiceCollection()
+	public void AddApplicationServices_ReturnsServiceCollection()
 	{
 		// Arrange
 		ServiceCollection services = new();
@@ -76,7 +81,7 @@ public class ApplicationServiceRegistrationTests
 
 
 	[Fact]
-	public void AddIoServices_ScopedLifetime_VerifyInstanceWithinScope()
+	public void AddApplicationServices_ScopedLifetime_VerifyInstanceWithinScope()
 	{
 		// Arrange
 		ServiceCollection services = new();
@@ -113,7 +118,7 @@ public class ApplicationServiceRegistrationTests
 	}
 
 	[Fact]
-	public void AddIoServices_ScopedLifetime_VerifyInstancesAcrossScopes()
+	public void AddApplicationServices_ScopedLifetime_VerifyInstancesAcrossScopes()
 	{
 		// Arrange
 		ServiceCollection services = new();
@@ -180,5 +185,82 @@ public class ApplicationServiceRegistrationTests
 		Assert.Same(service5, service6); //Email is Singleton
 		Assert.Same(service7, service8); //Gpg is Singleton
 		Assert.Same(service9, service10); //Log is Singleton
+	}
+
+	[Fact]
+	public void AddApplicationServices_ConfigurationHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+		services.AddSingleton<IConfiguration>(_configuration);
+		
+		// Act
+		services.AddApplicationServices(_configuration);
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<GetConfigurationByKeyQuery, string>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddApplicationServices_LogHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+		services.AddSingleton<IConfiguration>(_configuration);
+
+		// Act
+		services.AddApplicationServices(_configuration);
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<CreateLogCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+
+	[Fact]
+	public void AddApplicationServices_EmailHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+		services.AddSingleton<IConfiguration>(_configuration);
+
+		// Act
+		services.AddApplicationServices(_configuration);
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<SendEmailCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddApplicationServices_EncryptHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+		services.AddSingleton<IConfiguration>(_configuration);
+
+		// Act
+		services.AddApplicationServices(_configuration);
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<EncryptFileCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
 	}
 }
