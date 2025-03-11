@@ -182,4 +182,94 @@ public class IoServiceRegistrationTests
 		Assert.NotSame(service5, service6);
 		Assert.NotSame(service7, service8);
 	}
+
+	[Fact]
+	public void AddIoOperationsServices_DirectoryCleanUpHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+
+		// Act
+		services.AddIoOperationsServices();
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<CleanUpDirectoryCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddIoOperationsServices_CreateDirectoryHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+
+		// Act
+		services.AddIoOperationsServices();
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<CreateDirectoryCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddIoOperationsServices_DeleteFilesHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+
+		// Act
+		services.AddIoOperationsServices();
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<DeleteFilesCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddIoOperationsServices_CopyFileHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+
+		// Act
+		services.AddIoOperationsServices();
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<CopyFileCommand>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
+
+	[Fact]
+	public void AddIoOperationsServices_MoveFileHandler_VerifyMediatorHandlerExists()
+	{
+		// Arrange
+		ServiceCollection services = new();
+
+		// Act
+		services.AddIoOperationsServices();
+		List<ServiceDescriptor> serviceDescriptors = services.ToList();
+
+		// Assert
+		ServiceDescriptor? handlerDescriptor = serviceDescriptors.FirstOrDefault(sd =>
+			sd.ServiceType == typeof(IRequestHandler<MoveFileCommand, bool>));
+
+		Assert.NotNull(handlerDescriptor);
+		Assert.Equal(ServiceLifetime.Transient, handlerDescriptor.Lifetime);
+	}
 }
