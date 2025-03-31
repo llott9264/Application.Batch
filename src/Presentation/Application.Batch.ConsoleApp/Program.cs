@@ -1,29 +1,19 @@
-﻿using Application.Batch.ConsoleApp;
-using Application.Batch.Core.Application.Enums;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
-using Application.Batch.Core.Application.Features.Workflows.ApplicationWorkflow.Commands;
 
-Environment.SetEnvironmentVariable("ITEXT_BOUNCY_CASTLE_FACTORY_NAME", "bouncy-castle"); //Have to set this in case we need to create a PDF
-IConfiguration configuration = new ConfigurationBuilder().GetConfiguration();
-IHost host = StartupExtensions.BuildHost(configuration);
-IMediator? mediator = host.Services.GetService<IMediator>();
-string workFlowName = args.Length > 0 ? args[0] : "default";
+namespace Application.Batch.ConsoleApp;
 
-if (mediator == null)
+public static class Program
 {
-	return;
-}
+	public static async Task Main(string[] args)
+	{
+		IConfiguration configuration = new ConfigurationBuilder().GetConfiguration();
+		IHost host = StartupExtensions.BuildHost(configuration);
+		IMediator? mediator = host.Services.GetService<IMediator>();
 
-if (Enum.TryParse(workFlowName, out WorkflowName workflowEnum))
-{
-	
-	await mediator.Send(new ProcessWorkflowCommand(workflowEnum));
-}
-else
-{
-	await mediator.Send(new CreateLogCommand($"Invalid parameter: {workFlowName}", LogType.Error));
+		ApplicationRunner runner = new(mediator);
+		await runner.RunAsync(args);
+	}
 }

@@ -1,6 +1,6 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Features.Utilities.Gpg.Commands;
 using MediatR;
+using Utilities.Gpg.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 
@@ -18,23 +18,43 @@ public abstract class IncomingFile(
 	public string GpgPrivateKeyName { get; } = gpgPrivateKeyName;
 	public string GpgPrivateKeyPassword { get; } = gpgPrivateKeyPassword;
 	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}\{GpgFileName}";
-	public string ArchiveFileFullPath => $@"{ArchiveFolder}\{FileName}";
-	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}\{GpgFileName}";
+	public string ArchiveFileFullPath => $@"{ArchiveFolder}{FileName}";
+	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}{GpgFileName}";
 	public bool DoesArchiveFileExist()
 	{
-		throw new NotImplementedException();
+		return File.Exists(ArchiveFileFullPath);
 	}
 	public bool DoesArchiveGpgFileExist()
 	{
-		throw new NotImplementedException();
+		return File.Exists(ArchiveGpgFileFullPath);
 	}
 	public async Task DecryptFile()
 	{
 		await Mediator.Send(new DecryptFileCommand(ArchiveGpgFileFullPath, ArchiveFileFullPath, GpgPrivateKeyName, GpgPrivateKeyPassword));
 	}
 
-	public void MoveToGpgFileToArchiveFolder()
+	public async Task MoveArchiveFileToProcessedFolder()
 	{
-		MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
+		await MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
+	}
+
+	public async Task MoveArchiveFileToFailedFolder()
+	{
+		await MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
+	}
+
+	public async Task MoveArchiveGpgFileToProcessedFolder()
+	{
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+	}
+
+	public async Task MoveArchiveGpgFileToFailedFolder()
+	{
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
+	}
+
+	public async Task MoveToGpgFileToArchiveFolder()
+	{
+		await MoveToFolder(DataTransferGpgFullPath, ArchiveFolder);
 	}
 }

@@ -1,17 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Application.Batch.Core.Application.Contracts.Persistence;
+using Application.Batch.Core.Domain.Common;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public abstract class Repository<T>(IDbContext context) : IRepository<T> where T : Entity
 {
-	protected readonly IDbContext Context;
-
-	protected Repository(IDbContext context)
-	{
-		Context = context;
-	}
+	protected readonly IDbContext Context = context;
 
 	public T? GetById(int id)
 	{
@@ -39,12 +35,6 @@ public class Repository<T> : IRepository<T> where T : class
 		return entity;
 	}
 
-	public async Task<T> AddAsync(T entity)
-	{
-		await Context.Set<T>().AddAsync(entity);
-		return entity;
-	}
-
 	public void AddRange(IEnumerable<T> entities)
 	{
 		Context.Set<T>().AddRange(entities);
@@ -54,21 +44,10 @@ public class Repository<T> : IRepository<T> where T : class
 	{
 		Context.Set<T>().Update(entity);
 	}
-	public Task UpdateAsync(T entity)
-	{
-		Context.Entry(entity).State = EntityState.Modified;
-		return Task.CompletedTask;
-	}
 
 	public void Remove(T entity)
 	{
 		Context.Set<T>().Remove(entity);
-	}
-
-	public Task RemoveAsync(T entity)
-	{
-		Context.Set<T>().Remove(entity);
-		return Task.CompletedTask;
 	}
 
 	public void RemoveRange(IEnumerable<T> entities)
