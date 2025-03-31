@@ -9,6 +9,12 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Utilities.Configuration.MediatR;
+using Utilities.IoOperations;
+using Utilities.IoOperations.MediatR.Directory.CleanUpDirectory;
+using Utilities.IoOperations.MediatR.Directory.CreateDirectory;
+using Utilities.IoOperations.MediatR.Directory.DeleteFiles;
+using Utilities.IoOperations.MediatR.File.CopyFile;
+using Utilities.IoOperations.MediatR.File.MoveFile;
 
 namespace Application.Batch.Infrastructure.Io.Tests;
 
@@ -22,11 +28,31 @@ public class IoServiceRegistrationTests
 	private static Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:PrivateKeyName"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyName));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:PrivateKeyPassword"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyPassword));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "FileRetentionPeriodInMonths"), It.IsAny<CancellationToken>())).Returns(Task.FromResult("-13"));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:ArchivePath"), It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:DataTransferPath"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:PrivateKeyName"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(GpgPrivateKeyName));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RevokesFromContractor:PrivateKeyPassword"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyPassword));
+		mock.Setup(m =>
+			m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "FileRetentionPeriodInMonths"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult("-13"));
 		return mock;
 	}
 
@@ -114,7 +140,7 @@ public class IoServiceRegistrationTests
 			IRevokesFromContractor? service8 = scope.ServiceProvider.GetService<IRevokesFromContractor>();
 
 			// Verify same instance within the same scope
-			Assert.Same(service1, service2); 
+			Assert.Same(service1, service2);
 			Assert.Same(service3, service4);
 			Assert.Same(service5, service6);
 			Assert.Same(service7, service8);
@@ -144,6 +170,7 @@ public class IoServiceRegistrationTests
 		{
 			service1 = scope1.ServiceProvider.GetService<ICustomerToPrintContractor>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service2 = scope2.ServiceProvider.GetService<ICustomerToPrintContractor>();
@@ -153,6 +180,7 @@ public class IoServiceRegistrationTests
 		{
 			service3 = scope1.ServiceProvider.GetService<IRenewalsToPrintContractor>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service4 = scope2.ServiceProvider.GetService<IRenewalsToPrintContractor>();
@@ -162,6 +190,7 @@ public class IoServiceRegistrationTests
 		{
 			service5 = scope1.ServiceProvider.GetService<ICustomersFromContractor>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service6 = scope2.ServiceProvider.GetService<ICustomersFromContractor>();
@@ -171,6 +200,7 @@ public class IoServiceRegistrationTests
 		{
 			service7 = scope1.ServiceProvider.GetService<IRevokesFromContractor>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service8 = scope2.ServiceProvider.GetService<IRevokesFromContractor>();
