@@ -8,8 +8,8 @@ public class CustomerRepository(IDbContext context) : Repository<Customer>(conte
 {
 	public Task<bool> IsCustomerSocialSecurityNumberUnique(string ssn, int customerId)
 	{
-		bool matches = Context.Customers.Any(c => c.SocialSecurityNumber == ssn && c.Id != customerId);
-		return Task.FromResult(matches);
+		int matches = Context.Customers.Count(c => c.SocialSecurityNumber == ssn && c.Id != customerId);
+		return Task.FromResult(matches == 0);
 	}
 
 	public List<Customer> GetCustomersIncludeAddresses()

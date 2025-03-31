@@ -1,4 +1,6 @@
-﻿namespace Application.Batch.Core.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Application.Batch.Core.Domain.Common;
 
 public class Entity
 {

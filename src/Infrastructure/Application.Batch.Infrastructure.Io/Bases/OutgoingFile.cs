@@ -1,6 +1,7 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Features.Utilities.Gpg.Commands;
 using MediatR;
+using Utilities.Gpg.MediatR;
+using Utilities.IoOperations.MediatR.File.CopyFile;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 
@@ -15,9 +16,9 @@ public abstract class OutgoingFile(
 	public string FileName { get; } = fileName;
 	public string GpgFileName { get; } = gpgFileName;
 	public string GpgPublicKeyName { get; } = gpgPublicKeyName;
-	public string ArchiveFileFullPath => $@"{ArchiveFolder}\{FileName}";
-	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}\{GpgFileName}";
-	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}\{GpgFileName}";
+	public string ArchiveFileFullPath => $@"{ArchiveFolder}{FileName}";
+	public string ArchiveGpgFileFullPath => $@"{ArchiveFolder}{GpgFileName}";
+	public string DataTransferGpgFullPath => $@"{DataTransferFolderBasePath}{GpgFileName}";
 
 	public async Task EncryptFile()
 	{
@@ -33,27 +34,27 @@ public abstract class OutgoingFile(
 	{
 		return File.Exists(ArchiveGpgFileFullPath);
 	}
-	public void MoveGpgFileToDataTransferFolder()
+	public async Task CopyGpgFileToDataTransferFolder()
 	{
-		File.Copy(ArchiveGpgFileFullPath, DataTransferGpgFullPath);
+		await Mediator.Send(new CopyFileCommand(ArchiveGpgFileFullPath, DataTransferFolderBasePath));
 	}
 
-	public void MoveArchiveFileToProcessedFolder()
+	public async Task MoveArchiveFileToProcessedFolder()
 	{
-		MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
+		await MoveToFolder(ArchiveFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public void MoveArchiveGpgFileToProcessFolder()
+	public async Task MoveArchiveGpgFileToProcessedFolder()
 	{
-		MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 	}
 
-	public void MoveArchiveFileToFailedFolder()
+	public async Task MoveArchiveFileToFailedFolder()
 	{
-		MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
+		await MoveToFolder(ArchiveFileFullPath, ArchiveFailedFolder);
 	}
-	public void MoveArchiveGpgFileToFailedFolder()
+	public async Task MoveArchiveGpgFileToFailedFolder()
 	{
-		MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
+		await MoveToFolder(ArchiveGpgFileFullPath, ArchiveFailedFolder);
 	}
 }

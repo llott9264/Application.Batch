@@ -1,10 +1,10 @@
-﻿using System.Linq.Expressions;
-using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Enums;
-using Application.Batch.Core.Application.Features.Utilities.Gpg.Commands;
-using Application.Batch.Core.Application.Features.Utilities.Log.Commands;
+﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Models;
 using MediatR;
+using Utilities.Gpg.MediatR;
+using Utilities.IoOperations.MediatR.File.MoveFile;
+using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.Bases;
 
@@ -62,7 +62,6 @@ public abstract class IncomingFiles(
 	{
 		Files.Add(new DecryptionFileDto(ArchiveFolder,
 			DataTransferFolderBasePath,
-			Path.GetFileNameWithoutExtension(fileName),
 			fileName));
 	}
 	public bool DoArchiveGpgFilesExist()
@@ -75,35 +74,35 @@ public abstract class IncomingFiles(
 		return Files.Aggregate(true, (current, file) => current && File.Exists(file.ArchiveFileFullPath));
 	}
 
-	public void MoveArchiveFilesToProcessedFolder()
+	public async Task MoveArchiveFilesToProcessedFolder()
 	{
 		foreach (DecryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveFileFullPath, ArchiveProcessedFolder);
+			await MoveToFolder(file.ArchiveFileFullPath, ArchiveProcessedFolder);
 		}
 	}
 
-	public void MoveArchiveGpgFilesToProcessFolder()
+	public async Task MoveArchiveGpgFilesToProcessedFolder()
 	{
 		foreach (DecryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveProcessedFolder);
+			await MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveProcessedFolder);
 		}
 	}
 
-	public void MoveArchiveFilesToFailedFolder()
+	public async Task MoveArchiveFilesToFailedFolder()
 	{
 		foreach (DecryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveFileFullPath, ArchiveFailedFolder);
+			await MoveToFolder(file.ArchiveFileFullPath, ArchiveFailedFolder);
 		}
 	}
 
-	public void MoveArchiveGpgFilesToFailedFolder()
+	public async Task MoveArchiveGpgFilesToFailedFolder()
 	{
 		foreach (DecryptionFileDto file in Files)
 		{
-			MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveFailedFolder);
+			await MoveToFolder(file.ArchiveGpgFileFullPath, ArchiveFailedFolder);
 		}
 	}
 
@@ -114,7 +113,12 @@ public abstract class IncomingFiles(
 		try
 		{
 			await Mediator.Send(new CreateLogCommand("Begin copying gpg files to archive transfer.", LogType.Information));
-			Files.ForEach(f => File.Move(f.DataTransferGpgFileFullPath, f.ArchiveGpgFileFullPath, true));
+
+			foreach (DecryptionFileDto file in Files)
+			{
+				await Mediator.Send(new MoveFileCommand(file.DataTransferGpgFileFullPath, ArchiveFolder));
+			}
+
 			await Mediator.Send(new CreateLogCommand("Successfully copied gpg files to archive folder.", LogType.Information));
 			isSuccessful = true;
 		}
@@ -123,7 +127,7 @@ public abstract class IncomingFiles(
 			await Mediator.Send(new CreateLogCommand($"Failure to copy gpg files to archive folder. Error Message: {e.Message}", LogType.Error));
 		}
 
-		await Mediator.Send(new CreateLogCommand("End copying gpg files to archive folder.", LogType.Error));
+		await Mediator.Send(new CreateLogCommand("End copying gpg files to archive folder.", LogType.Information));
 		return isSuccessful;
 	}
 
@@ -134,6 +138,6 @@ public abstract class IncomingFiles(
 			.OrderBy(f => f.CreationTime)
 			.ToList();
 
-		files.ForEach(f => Files.Add(new DecryptionFileDto(ArchiveFolder, DataTransferFolderBasePath, Path.GetFileNameWithoutExtension(f.Name), f.Name)));
+		files.ForEach(f => AddFileToDecrypt(f.Name));
 	}
 }

@@ -21,6 +21,6 @@ jobs:
           dotnet nuget list source
 
       - name: Build
-        run: dotnet build ./src/Presentation/Application.Batch.ConsoleApp/Application.Batch.ConsoleApp.csproj
-#      - name: Run Unit Tests
-#        run: dotnet test
+        run: dotnet build ./src/Application.Batch.sln
+      - name: Run Unit Tests
+        run: dotnet test ./src/Application.Batch.sln
