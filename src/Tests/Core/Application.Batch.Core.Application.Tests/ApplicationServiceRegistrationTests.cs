@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Utilities.Configuration.MediatR;
 using Utilities.Email;
 using Utilities.Email.MediatR;
@@ -86,7 +85,7 @@ public class ApplicationServiceRegistrationTests
 		// Arrange
 		ServiceCollection services = new();
 		services.AddSingleton<IConfiguration>(_configuration);
-		
+
 		// Act
 		services.AddApplicationServices(_configuration);
 		ServiceProvider serviceProvider = services.BuildServiceProvider();
@@ -139,6 +138,7 @@ public class ApplicationServiceRegistrationTests
 		{
 			service1 = scope1.ServiceProvider.GetService<IMediator>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service2 = scope2.ServiceProvider.GetService<IMediator>();
@@ -148,6 +148,7 @@ public class ApplicationServiceRegistrationTests
 		{
 			service3 = scope1.ServiceProvider.GetService<IMapper>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service4 = scope2.ServiceProvider.GetService<IMapper>();
@@ -157,6 +158,7 @@ public class ApplicationServiceRegistrationTests
 		{
 			service5 = scope1.ServiceProvider.GetService<IEmail>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service6 = scope2.ServiceProvider.GetService<IEmail>();
@@ -166,6 +168,7 @@ public class ApplicationServiceRegistrationTests
 		{
 			service7 = scope1.ServiceProvider.GetService<IGpg>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service8 = scope2.ServiceProvider.GetService<IGpg>();
@@ -175,6 +178,7 @@ public class ApplicationServiceRegistrationTests
 		{
 			service9 = scope1.ServiceProvider.GetService<ILog>();
 		}
+
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
 			service10 = scope2.ServiceProvider.GetService<ILog>();
@@ -193,7 +197,7 @@ public class ApplicationServiceRegistrationTests
 		// Arrange
 		ServiceCollection services = new();
 		services.AddSingleton<IConfiguration>(_configuration);
-		
+
 		// Act
 		services.AddApplicationServices(_configuration);
 		List<ServiceDescriptor> serviceDescriptors = services.ToList();
