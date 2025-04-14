@@ -1,19 +1,22 @@
-﻿using Application.Batch.Core.Application.Contracts.Io;
+﻿using System.Runtime.CompilerServices;
+using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
-using Application.Batch.Infrastructure.Io.Bases;
 using AutoMapper;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
-using System.Runtime.CompilerServices;
 using Utilities.Configuration.MediatR;
+using Utilities.FileManagement.Infrastructure;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
 [assembly: InternalsVisibleTo("Application.Batch.Infrastructure.Io.Tests")]
+
 namespace Application.Batch.Infrastructure.Io.IncomingFiles;
 
-internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator, GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
-	GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator), "CustomerList.txt", "CustomerList.txt.gpg"), ICustomersFromContractor
+internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : IncomingFile(mediator,
+		GetArchiveFolderBasePath(mediator), GetDataTransferFolderBasePath(mediator),
+		GetGpgPrivateKeyName(mediator), GetGpgPrivateKeyPassword(mediator), "CustomerList.txt", "CustomerList.txt.gpg"),
+	ICustomersFromContractor
 {
 	public string BatchName => "Customers From Print Contractor";
 
@@ -42,7 +45,8 @@ internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : Inc
 		}
 		catch (Exception e)
 		{
-			await Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
+			await Mediator.Send(new CreateLogCommand(
+				$"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return customers;
@@ -55,7 +59,8 @@ internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : Inc
 
 	private static string GetDataTransferFolderBasePath(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:DataTransferPath")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:DataTransferPath"))
+			.Result;
 	}
 
 	private static string GetGpgPrivateKeyName(IMediator mediator)
@@ -65,6 +70,7 @@ internal class CustomersFromContractor(IMediator mediator, IMapper mapper) : Inc
 
 	private static string GetGpgPrivateKeyPassword(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:PrivateKeyPassword")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersFromContractor:PrivateKeyPassword"))
+			.Result;
 	}
 }

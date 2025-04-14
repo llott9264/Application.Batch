@@ -1,4 +1,5 @@
 ﻿using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
+using Utilities.FileManagement.Contracts;
 
 namespace Application.Batch.Core.Application.Contracts.Io;
 

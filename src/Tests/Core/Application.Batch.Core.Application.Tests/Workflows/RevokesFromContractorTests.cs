@@ -1,16 +1,20 @@
-﻿using Application.Batch.Core.Application.Contracts.Io;
+﻿using System.Linq.Expressions;
+using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Application.Models;
+using Application.Batch.Core.Domain.Entities;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
-using Utilities.Logging.EventLog.MediatR;
+using Utilities.FileManagement.Models;
 using Utilities.Logging.EventLog;
-using ProcessWorkflowCommand = Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow.ProcessWorkflowCommand;
-using ProcessWorkflowCommandHandler = Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow.ProcessWorkflowCommandHandler;
-using Application.Batch.Core.Domain.Entities;
-using System.Linq.Expressions;
+using Utilities.Logging.EventLog.MediatR;
+using ProcessWorkflowCommand =
+	Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow.
+	ProcessWorkflowCommand;
+using ProcessWorkflowCommandHandler =
+	Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow.
+	ProcessWorkflowCommandHandler;
 
 namespace Application.Batch.Core.Application.Tests.Workflows;
 
@@ -24,10 +28,28 @@ public class RevokesFromContractorTests
 	private static Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:PrivateKeyName"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyName));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RevokesFromContractor:PrivateKeyPassword"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyPassword));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:ArchivePath"), It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:DataTransferPath"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RevokesFromContractor:PrivateKeyName"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(GpgPrivateKeyName));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RevokesFromContractor:PrivateKeyPassword"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPrivateKeyPassword));
 		return mock;
 	}
 
@@ -109,8 +131,6 @@ public class RevokesFromContractorTests
 	[Fact]
 	public async Task CallHandleMethod_FailsToMoveGpgFileToArchiveFolder()
 	{
-		
-
 		List<DecryptionFileDto> filesToDecrypt =
 			[new(ArchiveFolderBasePath, DataTransferFolderBasePath, "GpgFile1.txt.gpg")];
 
@@ -120,7 +140,8 @@ public class RevokesFromContractorTests
 		mockWorkflow.Setup(w => w.DoArchiveGpgFilesExist()).Returns(false);
 
 		ProcessWorkflowCommand command = new();
-		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, GetMockUnitOfWork().Object);
+		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object,
+			GetMockUnitOfWork().Object);
 
 		//Act
 		await handler.Handle(command, CancellationToken.None);
@@ -145,8 +166,6 @@ public class RevokesFromContractorTests
 	[Fact]
 	public async Task CallHandleMethod_FailsToDecryptFile()
 	{
-
-
 		List<DecryptionFileDto> filesToDecrypt =
 			[new(ArchiveFolderBasePath, DataTransferFolderBasePath, "GpgFile1.txt.gpg")];
 
@@ -157,7 +176,8 @@ public class RevokesFromContractorTests
 		mockWorkflow.Setup(w => w.DoArchiveFilesExist()).Returns(false);
 
 		ProcessWorkflowCommand command = new();
-		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, GetMockUnitOfWork().Object);
+		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object,
+			GetMockUnitOfWork().Object);
 
 		//Act
 		await handler.Handle(command, CancellationToken.None);

@@ -1,17 +1,13 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
-using Application.Batch.Core.Application.Contracts.Pdf;
 using Application.Batch.Core.Application.Contracts.Persistence;
-using Application.Batch.Core.Application.Features.Mapper;
 using Application.Batch.Core.Application.Features.Workflows.RenewalsToPrintContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Application.Models;
 using Application.Batch.Core.Domain.Entities;
-using AutoMapper;
 using MediatR;
 using Moq;
-using System.Linq.Expressions;
 using Utilities.Configuration.MediatR;
-using Utilities.Logging.EventLog.MediatR;
+using Utilities.FileManagement.Models;
 using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Tests.Workflows;
 
@@ -26,11 +22,32 @@ public class RenewalsToPrintContractorTests
 	private Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:PublicKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPublicKeyName));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "WWorkflows:RenewalsToPrintContractor:PdfTemplatePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(PdfTemplatePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DocumentsPerFile));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RenewalsToPrintContractor:ArchivePath"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RenewalsToPrintContractor:DataTransferPath"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RenewalsToPrintContractor:PublicKey"), It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(GpgPublicKeyName));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "WWorkflows:RenewalsToPrintContractor:PdfTemplatePath"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(PdfTemplatePath));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(DocumentsPerFile));
 		return mock;
 	}
 
@@ -87,7 +104,7 @@ public class RenewalsToPrintContractorTests
 		mockWorkflow.Verify(g => g.CopyGpgFilesToDataTransferFolder(), Times.Once);
 		mockWorkflow.Verify(g => g.MoveArchiveFilesToProcessedFolder(), Times.Once);
 		mockWorkflow.Verify(g => g.MoveArchiveGpgFilesToProcessedFolder(), Times.Once);
-		
+
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
 				request.Message.Contains("Begin generating file for Renewals To Print Contractor.")
 				&& request.LogType == LogType.Information),
@@ -109,7 +126,7 @@ public class RenewalsToPrintContractorTests
 	{
 		//Arrange
 		List<Customer> customers = new();
-		
+
 		Mock<IMediator> mockMediator = GetMockMediator();
 
 		Mock<IUnitOfWork> mockUnitOfWork = GetMockUnitOfWork();
