@@ -1,5 +1,5 @@
 ﻿using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Domain.Entities;
+using Utilities.FileManagement.Contracts;
 
 namespace Application.Batch.Core.Application.Contracts.Io;
 
