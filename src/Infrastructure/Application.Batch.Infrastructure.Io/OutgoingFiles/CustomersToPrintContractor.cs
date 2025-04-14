@@ -1,8 +1,8 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Domain.Entities;
-using Application.Batch.Infrastructure.Io.Bases;
 using MediatR;
 using Utilities.Configuration.MediatR;
+using Utilities.FileManagement.Infrastructure;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
@@ -36,7 +36,8 @@ internal class CustomersToPrintContractor(IMediator mediator)
 		}
 		catch (Exception e)
 		{
-			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred writing file.  Error message: {e.Message}", LogType.Error));
+			Mediator.Send(new CreateLogCommand(
+				$"{BatchName} - Error occurred writing file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return isSuccessful;
@@ -49,7 +50,8 @@ internal class CustomersToPrintContractor(IMediator mediator)
 
 	private static string GetDataTransferFolderBasePath(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersToPrintContractor:DataTransferPath")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:CustomersToPrintContractor:DataTransferPath"))
+			.Result;
 	}
 
 	private static string GetGpgPublicKeyName(IMediator mediator)

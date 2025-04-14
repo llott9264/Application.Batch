@@ -1,17 +1,17 @@
 ﻿using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Features.Workflows.RevokesFromContractor.Commands.ProcessWorkflow;
-using Application.Batch.Core.Application.Models;
 using AutoMapper;
 using MediatR;
 using Microsoft.VisualBasic.FileIO;
 using Utilities.Configuration.MediatR;
+using Utilities.FileManagement.Models;
 using Utilities.Logging.EventLog;
 using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Infrastructure.Io.IncomingFiles;
 
 internal class RevokesFromContractor(IMediator mediator, IMapper mapper)
-	: Bases.IncomingFiles(mediator,
+	: Utilities.FileManagement.Infrastructure.IncomingFiles(mediator,
 		GetArchiveFolderBasePath(mediator),
 		GetDataTransferFolderBasePath(mediator),
 		GetGpgPrivateKeyName(mediator),
@@ -47,7 +47,8 @@ internal class RevokesFromContractor(IMediator mediator, IMapper mapper)
 		}
 		catch (Exception e)
 		{
-			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
+			Mediator.Send(new CreateLogCommand(
+				$"{BatchName} - Error occurred reading file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return revokes;
@@ -70,6 +71,7 @@ internal class RevokesFromContractor(IMediator mediator, IMapper mapper)
 
 	private static string GetGpgPrivateKeyPassword(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:RevokesFromContractor:PrivateKeyPassword")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:RevokesFromContractor:PrivateKeyPassword"))
+			.Result;
 	}
 }

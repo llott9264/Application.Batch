@@ -1,4 +1,4 @@
-﻿using Application.Batch.Core.Application.Models;
+﻿using Utilities.FileManagement.Models;
 
 namespace Application.Batch.Core.Application.Tests.Models;
 

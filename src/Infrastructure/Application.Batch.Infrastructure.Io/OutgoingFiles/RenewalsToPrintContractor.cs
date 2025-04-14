@@ -9,7 +9,7 @@ using Utilities.Logging.EventLog.MediatR;
 namespace Application.Batch.Infrastructure.Io.OutgoingFiles;
 
 internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintContractorPdf pdf)
-	: Bases.OutgoingFiles(mediator,
+	: Utilities.FileManagement.Infrastructure.OutgoingFiles(mediator,
 		GetArchiveFolderBasePath(mediator),
 		GetDataTransferFolderBasePath(mediator),
 		GetGpgPublicKeyName(mediator)), IRenewalsToPrintContractor
@@ -22,8 +22,11 @@ internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintCon
 
 		try
 		{
-			string pdfTemplateFullPath = Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:PdfTemplatePath")).Result;
-			int documentsPerFile = Convert.ToInt32(Mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:DocumentsPerFile")).Result);
+			string pdfTemplateFullPath = Mediator
+				.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:PdfTemplatePath")).Result;
+
+			int documentsPerFile = Convert.ToInt32(Mediator
+				.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:DocumentsPerFile")).Result);
 
 			List<Customer[]> result = customers.Chunk(documentsPerFile).ToList();
 			string fileNameBase = "Renewals_";
@@ -41,7 +44,8 @@ internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintCon
 		}
 		catch (Exception e)
 		{
-			Mediator.Send(new CreateLogCommand($"{BatchName} - Error occurred writing file.  Error message: {e.Message}", LogType.Error));
+			Mediator.Send(new CreateLogCommand(
+				$"{BatchName} - Error occurred writing file.  Error message: {e.Message}", LogType.Error));
 		}
 
 		return isSuccessful;
@@ -54,7 +58,8 @@ internal class RenewalsToPrintContractor(IMediator mediator, IRenewalsToPrintCon
 
 	private static string GetDataTransferFolderBasePath(IMediator mediator)
 	{
-		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:DataTransferPath")).Result;
+		return mediator.Send(new GetConfigurationByKeyQuery("Workflows:RenewalsToPrintContractor:DataTransferPath"))
+			.Result;
 	}
 
 	private static string GetGpgPublicKeyName(IMediator mediator)
