@@ -2,12 +2,11 @@
 using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Application.Features.Workflows.CustomersToPrintContractor.Commands.ProcessWorkflow;
 using Application.Batch.Core.Domain.Entities;
-using Castle.Components.DictionaryAdapter;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
-using Utilities.Logging.EventLog.MediatR;
 using Utilities.Logging.EventLog;
+using Utilities.Logging.EventLog.MediatR;
 
 namespace Application.Batch.Core.Application.Tests.Workflows;
 
@@ -20,15 +19,29 @@ public class CustomersToPrintContractorTests
 	private Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:CustomersToPrintContractor:PublicKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPublicKeyName));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:CustomersToPrintContractor:ArchivePath"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:CustomersToPrintContractor:DataTransferPath"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:CustomersToPrintContractor:PublicKey"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(GpgPublicKeyName));
 		return mock;
 	}
 
-	private static Mock<ICustomerToPrintContractor> GetMockWorkflow()
+	private static Mock<ICustomersToPrintContractor> GetMockWorkflow()
 	{
-		Mock<ICustomerToPrintContractor> mock = new();
+		Mock<ICustomersToPrintContractor> mock = new();
 		return mock;
 	}
 
@@ -59,7 +72,7 @@ public class CustomersToPrintContractorTests
 		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		Mock<ICustomersToPrintContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
 		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
@@ -102,7 +115,7 @@ public class CustomersToPrintContractorTests
 		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		Mock<ICustomersToPrintContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
 		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
@@ -154,7 +167,7 @@ public class CustomersToPrintContractorTests
 		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		Mock<ICustomersToPrintContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
 		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(false);
 
@@ -206,7 +219,7 @@ public class CustomersToPrintContractorTests
 		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		Mock<ICustomersToPrintContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(false);
 		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 
@@ -221,7 +234,7 @@ public class CustomersToPrintContractorTests
 		mockWorkflow.Verify(g => g.MoveArchiveFileToProcessedFolder(), Times.Never);
 		mockWorkflow.Verify(g => g.MoveArchiveGpgFileToProcessedFolder(), Times.Never);
 		mockWorkflow.Verify(g => g.MoveArchiveFileToFailedFolder(), Times.Once);
-		
+
 
 		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
 				request.Message.Contains("Begin generating file for Customer List.")
@@ -260,7 +273,7 @@ public class CustomersToPrintContractorTests
 		customerRepository.Setup(m => m.GetAll()).Returns(customers);
 		mockUnitOfWork.Setup(m => m.Customers).Returns(customerRepository.Object);
 
-		Mock<ICustomerToPrintContractor> mockWorkflow = GetMockWorkflow();
+		Mock<ICustomersToPrintContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
 		mockWorkflow.Setup(w => w.WriteFile(customers)).Returns(true);
 		mockWorkflow.Setup(w => w.EncryptFile()).Throws(new Exception());

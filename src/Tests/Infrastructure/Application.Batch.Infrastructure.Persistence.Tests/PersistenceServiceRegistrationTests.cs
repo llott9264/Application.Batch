@@ -15,7 +15,7 @@ public class PersistenceServiceRegistrationTests
 		// Arrange
 		ServiceCollection services = new();
 		IConfigurationRoot configuration = new ConfigurationBuilder()
-			.AddInMemoryCollection(new Dictionary<string, string>
+			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
 				{ "ConnectionStrings:Customer", "Server=Test;Database=TestDb;Trusted_Connection=True;" }
 			})
@@ -26,7 +26,8 @@ public class PersistenceServiceRegistrationTests
 
 		// Assert
 		ServiceProvider provider = services.BuildServiceProvider();
-		DbContextOptions<ApplicationDbContext> dbContextOptions = provider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
+		DbContextOptions<ApplicationDbContext> dbContextOptions =
+			provider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
 
 		Assert.NotNull(dbContextOptions); // Ensure options are registered
 		Assert.IsType<DbContextOptions<ApplicationDbContext>>(dbContextOptions); // Correct type

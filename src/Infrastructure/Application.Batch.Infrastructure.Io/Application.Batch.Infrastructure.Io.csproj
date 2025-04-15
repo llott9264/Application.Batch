@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Utilities.FileManagement" Version="1.0.3" />
+    <PackageReference Include="Utilities.FileManagement" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>

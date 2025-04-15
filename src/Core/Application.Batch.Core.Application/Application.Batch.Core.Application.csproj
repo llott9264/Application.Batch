@@ -13,7 +13,7 @@
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Utilities.Configuration" Version="1.2.4" />
     <PackageReference Include="Utilities.Email" Version="1.3.24" />
-    <PackageReference Include="Utilities.FileManagement" Version="1.0.3" />
+    <PackageReference Include="Utilities.FileManagement" Version="1.0.4" />
     <PackageReference Include="Utilities.Logging.EventLog" Version="1.2.8" />
   </ItemGroup>
 
