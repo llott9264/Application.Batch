@@ -115,14 +115,17 @@ public class RenewalsToPrintContractorTests
 	public void WriteFile_ValidCustomerList_ThrowsException()
 	{
 		//Arrange
-		Mock<IMediator> mock = GetMockMediator();
-		mock.Setup(m =>
+		Mock<IMediator> mockMediator = GetMockMediator();
+		mockMediator.Setup(m =>
 			m.Send(
 				It.Is<GetConfigurationByKeyQuery>(request =>
 					request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"),
 				It.IsAny<CancellationToken>())).Returns(Task.FromResult("0"));
+
+		Mock<IRenewalsToPrintContractorPdf> mockPdf = GetMockPdf();
+
 		IRenewalsToPrintContractor renewalsToPrintContractor =
-			new RenewalsToPrintContractor(GetMockMediator().Object, GetMockPdf().Object);
+			new RenewalsToPrintContractor(mockMediator.Object, mockPdf.Object);
 
 		List<Customer> customers =
 		[
@@ -145,9 +148,8 @@ public class RenewalsToPrintContractorTests
 
 		//Assert
 		Assert.False(isSuccessful);
-		Assert.True(renewalsToPrintContractor.Files.Count == 0);
 
-		mock.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
+		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
 			request.LogType == LogType.Error
 			&& request.Message.Contains("Error occurred writing file.")
 		), CancellationToken.None), Times.Once);

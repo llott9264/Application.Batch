@@ -113,7 +113,7 @@ public class RevokesFromContractorTest
 	{
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
-		IRevokesFromContractor revokesFromContractor = new RevokesFromContractor(GetMockMediator().Object, GetMapper());
+		IRevokesFromContractor revokesFromContractor = new RevokesFromContractor(mock.Object, GetMapper());
 
 		revokesFromContractor.AddFileToDecrypt("ReadFile3.txt.gpg");
 

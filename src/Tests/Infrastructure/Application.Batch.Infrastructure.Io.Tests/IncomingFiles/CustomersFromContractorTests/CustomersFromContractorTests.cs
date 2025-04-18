@@ -116,7 +116,7 @@ public class CustomersFromContractorTests
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
 		ICustomersFromContractor customersFromContractor =
-			new CustomersFromContractor(GetMockMediator().Object, GetMapper());
+			new CustomersFromContractor(mock.Object, GetMapper());
 
 		if (File.Exists(customersFromContractor.ArchiveFileFullPath))
 		{
