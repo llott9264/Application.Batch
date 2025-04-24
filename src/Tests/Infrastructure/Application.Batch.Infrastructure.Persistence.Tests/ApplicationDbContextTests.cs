@@ -19,7 +19,7 @@ public class ApplicationDbContextTests
 	public async Task SaveChangesAsync_SetsAuditFields()
 	{
 		// Arrange
-		using (ApplicationDbContext context = CreateInMemoryContext())
+		await using (ApplicationDbContext context = CreateInMemoryContext())
 		{
 			Address address = new()
 			{

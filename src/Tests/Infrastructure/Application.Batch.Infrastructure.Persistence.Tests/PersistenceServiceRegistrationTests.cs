@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
@@ -14,15 +13,9 @@ public class PersistenceServiceRegistrationTests
 	{
 		// Arrange
 		ServiceCollection services = new();
-		IConfigurationRoot configuration = new ConfigurationBuilder()
-			.AddInMemoryCollection(new Dictionary<string, string?>
-			{
-				{ "ConnectionStrings:Customer", "Server=Test;Database=TestDb;Trusted_Connection=True;" }
-			})
-			.Build();
 
 		// Act
-		services.AddPersistenceServices(configuration);
+		services.AddPersistenceServices("ConnectionStrings:Customer");
 
 		// Assert
 		ServiceProvider provider = services.BuildServiceProvider();
@@ -40,10 +33,9 @@ public class PersistenceServiceRegistrationTests
 	{
 		// Arrange
 		ServiceCollection services = new();
-		IConfigurationRoot configuration = new ConfigurationBuilder().Build();
 
 		// Act
-		services.AddPersistenceServices(configuration);
+		services.AddPersistenceServices("ConnectionStrings:Customer");
 
 		// Assert
 		ServiceDescriptor? descriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(IDbContext));
@@ -57,10 +49,9 @@ public class PersistenceServiceRegistrationTests
 	{
 		// Arrange
 		ServiceCollection services = new();
-		IConfigurationRoot configuration = new ConfigurationBuilder().Build();
 
 		// Act
-		services.AddPersistenceServices(configuration);
+		services.AddPersistenceServices("ConnectionStrings:Customer");
 
 		// Assert
 		ServiceDescriptor? descriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(IUnitOfWork));
@@ -74,10 +65,9 @@ public class PersistenceServiceRegistrationTests
 	{
 		// Arrange
 		ServiceCollection services = new();
-		IConfigurationRoot configuration = new ConfigurationBuilder().Build();
 
 		// Act
-		IServiceCollection result = services.AddPersistenceServices(configuration);
+		IServiceCollection result = services.AddPersistenceServices("ConnectionStrings:Customer");
 
 		// Assert
 		Assert.Same(services, result); // Returns same instance for chaining

@@ -1,58 +1,56 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Domain.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
-public abstract class Repository<T>(IDbContext context) : IRepository<T> where T : Entity
+public abstract class RepositoryBase<T>(IDbContextBase context) : IRepositoryBase<T> where T : Entity
 {
-	protected readonly IDbContext Context = context;
-
 	public T? GetById(int id)
 	{
-		return Context.Set<T>().Find(id);
+		return context.Set<T>().Find(id);
 	}
 
 	public async Task<T?> GetByIdAsync(int id)
 	{
-		return await Context.Set<T>().FindAsync(id);
+		return await context.Set<T>().FindAsync(id);
 	}
 
 	public List<T> GetAll()
 	{
-		return Context.Set<T>().ToList();
+		return context.Set<T>().ToList();
 	}
 
 	public async Task<List<T>> GetAllAsync()
 	{
-		return await Context.Set<T>().ToListAsync();
+		return await context.Set<T>().ToListAsync();
 	}
 
 	public T Add(T entity)
 	{
-		Context.Set<T>().Add(entity);
+		context.Set<T>().Add(entity);
 		return entity;
 	}
 
 	public void AddRange(IEnumerable<T> entities)
 	{
-		Context.Set<T>().AddRange(entities);
+		context.Set<T>().AddRange(entities);
 	}
 
 	public void Update(T entity)
 	{
-		Context.Set<T>().Update(entity);
+		context.Set<T>().Update(entity);
 	}
 
 	public void Remove(T entity)
 	{
-		Context.Set<T>().Remove(entity);
+		context.Set<T>().Remove(entity);
 	}
 
 	public void RemoveRange(IEnumerable<T> entities)
 	{
-		Context.Set<T>().RemoveRange(entities);
+		context.Set<T>().RemoveRange(entities);
 	}
 
 	public void RemoveAll()
@@ -63,17 +61,17 @@ public abstract class Repository<T>(IDbContext context) : IRepository<T> where T
 
 	public List<T> Find(Expression<Func<T, bool>> predicate)
 	{
-		return Context.Set<T>().Where(predicate).ToList();
+		return context.Set<T>().Where(predicate).ToList();
 	}
 
 	public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
 	{
-		return await Context.Set<T>().Where(predicate).ToListAsync();
+		return await context.Set<T>().Where(predicate).ToListAsync();
 	}
 
 	public T? Find(Expression<Func<T, bool>> predicate, List<string>? includes)
 	{
-		IQueryable<T> query = Context.Set<T>();
+		IQueryable<T> query = context.Set<T>();
 		if (includes != null)
 		{
 			query = includes.Aggregate(query, (current, include) => current.Include(include));
@@ -84,7 +82,7 @@ public abstract class Repository<T>(IDbContext context) : IRepository<T> where T
 
 	public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, List<string>? includes)
 	{
-		IQueryable<T> query = Context.Set<T>();
+		IQueryable<T> query = context.Set<T>();
 		if (includes != null)
 		{
 			query = includes.Aggregate(query, (current, include) => current.Include(include));
@@ -95,11 +93,11 @@ public abstract class Repository<T>(IDbContext context) : IRepository<T> where T
 
 	public bool DoesExist(Expression<Func<T, bool>> predicate)
 	{
-		return Context.Set<T>().Any(predicate);
+		return context.Set<T>().Any(predicate);
 	}
 
 	public async Task<bool> DoesExistAsync(Expression<Func<T, bool>> predicate)
 	{
-		return await Context.Set<T>().AnyAsync(predicate);
+		return await context.Set<T>().AnyAsync(predicate);
 	}
 }

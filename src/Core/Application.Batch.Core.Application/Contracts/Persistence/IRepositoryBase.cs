@@ -2,7 +2,7 @@
 
 namespace Application.Batch.Core.Application.Contracts.Persistence;
 
-public interface IRepository<T> where T : class
+public interface IRepositoryBase<T> where T : class
 {
 	T? GetById(int id);
 	Task<T?> GetByIdAsync(int id);

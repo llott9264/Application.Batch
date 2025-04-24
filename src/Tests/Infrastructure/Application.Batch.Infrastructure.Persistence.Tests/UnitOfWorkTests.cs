@@ -1,4 +1,5 @@
-﻿using Application.Batch.Core.Domain.Entities;
+﻿using Application.Batch.Core.Application.Contracts.Persistence;
+using Application.Batch.Core.Domain.Entities;
 using Moq;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
@@ -10,8 +11,8 @@ public class UnitOfWorkTests
 	{
 		//Arrange
 		Mock<IDbContext> mockContext = new Helper().MockContext();
-		UnitOfWork unitOfWork = new(mockContext.Object);
-		
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
+
 		//Act
 		bool isUnique = await unitOfWork.Customers.IsCustomerSocialSecurityNumberUnique("123456789", 6);
 
@@ -24,7 +25,7 @@ public class UnitOfWorkTests
 	{
 		//Arrange
 		Mock<IDbContext> mockContext = new Helper().MockContext();
-		UnitOfWork unitOfWork = new(mockContext.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
 
 		//Act
 		List<Address> addresses = unitOfWork.Addresses.GetAll();
@@ -38,7 +39,7 @@ public class UnitOfWorkTests
 	{
 		//Arrange
 		Mock<IDbContext> mockContext = new Helper().MockContext();
-		UnitOfWork unitOfWork = new(mockContext.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
 
 		//Act
 		int numberOfRecordsChanged = unitOfWork.Complete();
@@ -52,7 +53,7 @@ public class UnitOfWorkTests
 	{
 		//Arrange
 		Mock<IDbContext> mockContext = new Helper().MockContext();
-		UnitOfWork unitOfWork = new(mockContext.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
 
 		//Act
 		int numberOfRecordsChanged = await unitOfWork.CompleteAsync();
@@ -66,7 +67,7 @@ public class UnitOfWorkTests
 	{
 		//Arrange
 		Mock<IDbContext> mockContext = new Helper().MockContext();
-		UnitOfWork unitOfWork = new(mockContext.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
 
 		//Act
 		unitOfWork.Dispose();
