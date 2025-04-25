@@ -1,14 +1,57 @@
-﻿using Application.Batch.Core.Domain.Common;
+﻿using System.Security.Principal;
+using Application.Batch.Core.Domain.Common;
 using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Application.Batch.Infrastructure.Persistence;
 
-public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IDbContext
+public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+	: DbContext(options), IDbContext
 {
+	public new IDatabaseFacadeWrapper Database => new DatabaseFacadeWrapper(base.Database);
 	public virtual DbSet<Address> Addresses { get; set; }
 	public virtual DbSet<Customer> Customers { get; set; }
+
+	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
+	{
+		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
+		{
+			switch (entry.State)
+			{
+				case EntityState.Added:
+					entry.Entity.CreatedDate = DateTime.Now;
+					entry.Entity.CreatedBy = WindowsIdentity.GetCurrent().Name;
+					break;
+				case EntityState.Modified:
+					entry.Entity.LastModifiedDate = DateTime.Now;
+					entry.Entity.LastModifiedBy = WindowsIdentity.GetCurrent().Name;
+					break;
+			}
+		}
+
+		return await base.SaveChangesAsync(cancellationToken);
+	}
+
+	public override int SaveChanges()
+	{
+		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
+		{
+			switch (entry.State)
+			{
+				case EntityState.Added:
+					entry.Entity.CreatedDate = DateTime.Now;
+					entry.Entity.CreatedBy = WindowsIdentity.GetCurrent().Name;
+					break;
+				case EntityState.Modified:
+					entry.Entity.LastModifiedDate = DateTime.Now;
+					entry.Entity.LastModifiedBy = WindowsIdentity.GetCurrent().Name;
+					break;
+			}
+		}
+
+		return base.SaveChanges();
+	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -77,44 +120,4 @@ public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext>
 	}
 
 	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
-	{
-		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
-		{
-			switch (entry.State)
-			{
-				case EntityState.Added:
-					entry.Entity.CreatedDate = DateTime.Now;
-					entry.Entity.CreatedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-					break;
-				case EntityState.Modified:
-					entry.Entity.LastModifiedDate = DateTime.Now;
-					entry.Entity.LastModifiedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-					break;
-			}
-		}
-
-		return await base.SaveChangesAsync(cancellationToken);
-	}
-
-	public override int SaveChanges()
-	{
-		foreach (EntityEntry<Entity> entry in ChangeTracker.Entries<Entity>())
-		{
-			switch (entry.State)
-			{
-				case EntityState.Added:
-					entry.Entity.CreatedDate = DateTime.Now;
-					entry.Entity.CreatedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-					break;
-				case EntityState.Modified:
-					entry.Entity.LastModifiedDate = DateTime.Now;
-					entry.Entity.LastModifiedBy = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-					break;
-			}
-		}
-
-		return base.SaveChanges();
-	}
 }

@@ -7,8 +7,8 @@ namespace Application.Batch.Infrastructure.Persistence.Tests;
 
 internal class Helper
 {
-	private readonly Mock<DbSet<Customer>> _dbSetCustomer = GetCustomers();
 	private readonly Mock<DbSet<Address>> _dbSetAddress = GetAddresses();
+	private readonly Mock<DbSet<Customer>> _dbSetCustomer = GetCustomers();
 
 	internal Mock<IDbContext> MockContext()
 	{
@@ -21,9 +21,17 @@ internal class Helper
 			mockContext.Setup(m => m.SaveChanges()).Returns(2);
 			mockContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(3));
 			mockContext.Setup(m => m.Dispose());
-			//TODO: set up Database Facade
 			return mockContext;
 		}
+	}
+
+	internal Mock<IDatabaseFacadeWrapper> MockDatabaseFacade()
+	{
+		Mock<IDatabaseFacadeWrapper> databaseFacadeMock = new();
+		databaseFacadeMock.Setup(d => d.GetCommandTimeout()).Returns(10);
+		databaseFacadeMock.Setup(d => d.SetCommandTimeout(30)).Verifiable();
+		databaseFacadeMock.Setup(d => d.SetCommandTimeout(10)).Verifiable();
+		return databaseFacadeMock;
 	}
 
 	private static Mock<DbSet<Customer>> GetCustomers()
@@ -36,7 +44,7 @@ internal class Helper
 				FirstName = "John",
 				LastName = "Doe",
 				SocialSecurityNumber = "123456789",
-				Addresses = new List<Address>()
+				Addresses = new List<Address>
 				{
 					new()
 					{
@@ -55,7 +63,7 @@ internal class Helper
 				FirstName = "Joe",
 				LastName = "Jones",
 				SocialSecurityNumber = "987654321",
-				Addresses = new List<Address>()
+				Addresses = new List<Address>
 				{
 					new()
 					{
@@ -67,7 +75,6 @@ internal class Helper
 						ZipCode = "70816"
 					}
 				}
-
 			}
 		];
 
@@ -86,12 +93,12 @@ internal class Helper
 				City = "Walker",
 				State = "LA",
 				ZipCode = "70785",
-				Customer = new()
+				Customer = new Customer
 				{
 					Id = 6,
 					FirstName = "John",
 					LastName = "Doe",
-					SocialSecurityNumber = "123456789",
+					SocialSecurityNumber = "123456789"
 				}
 			},
 
@@ -103,12 +110,12 @@ internal class Helper
 				City = "Baton Rouge",
 				State = "LA",
 				ZipCode = "70816",
-				Customer = new()
+				Customer = new Customer
 				{
 					Id = 5,
 					FirstName = "Joe",
 					LastName = "Jones",
-					SocialSecurityNumber = "987654321",
+					SocialSecurityNumber = "987654321"
 				}
 			}
 		];

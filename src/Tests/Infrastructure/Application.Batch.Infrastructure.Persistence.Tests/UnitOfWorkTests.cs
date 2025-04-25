@@ -75,4 +75,50 @@ public class UnitOfWorkTests
 		//Assert
 		mockContext.Verify(m => m.Dispose(), Times.Once());
 	}
+
+	[Fact]
+	public void Complete_WithCommandTimeOut_ReturnsTwo()
+	{
+		//Arrange
+		Mock<IDbContext> mockContext = new Helper().MockContext();
+		Mock<IDatabaseFacadeWrapper> databaseFacadeMock = new Helper().MockDatabaseFacade();
+		mockContext.Setup(c => c.Database).Returns(databaseFacadeMock.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
+		int commandTimeoutInSeconds = 30;
+		int? originalTimeout = 10;
+		int expectedRecordsChanged = 2;
+
+		//Act
+		int numberOfRecordsChanged = unitOfWork.Complete(commandTimeoutInSeconds);
+
+		//Assert
+		databaseFacadeMock.Verify(d => d.GetCommandTimeout(), Times.Once());
+		databaseFacadeMock.Verify(d => d.SetCommandTimeout(commandTimeoutInSeconds), Times.Once());
+		databaseFacadeMock.Verify(d => d.SetCommandTimeout(originalTimeout), Times.Once());
+		mockContext.Verify(c => c.SaveChanges(), Times.Once());
+		Assert.Equal(expectedRecordsChanged, numberOfRecordsChanged);
+	}
+
+	[Fact]
+	public async Task CompleteAsync_WithCommandTimeOut_ReturnsTwo()
+	{
+		//Arrange
+		Mock<IDbContext> mockContext = new Helper().MockContext();
+		Mock<IDatabaseFacadeWrapper> databaseFacadeMock = new Helper().MockDatabaseFacade();
+		mockContext.Setup(c => c.Database).Returns(databaseFacadeMock.Object);
+		IUnitOfWork unitOfWork = new UnitOfWork(mockContext.Object);
+		int commandTimeoutInSeconds = 30;
+		int? originalTimeout = 10;
+		int expectedRecordsChanged = 3;
+
+		//Act
+		int numberOfRecordsChanged = await unitOfWork.CompleteAsync(commandTimeoutInSeconds);
+
+		//Assert
+		databaseFacadeMock.Verify(d => d.GetCommandTimeout(), Times.Once());
+		databaseFacadeMock.Verify(d => d.SetCommandTimeout(commandTimeoutInSeconds), Times.Once());
+		databaseFacadeMock.Verify(d => d.SetCommandTimeout(originalTimeout), Times.Once());
+		mockContext.Verify(c => c.SaveChangesAsync(CancellationToken.None), Times.Once());
+		Assert.Equal(expectedRecordsChanged, numberOfRecordsChanged);
+	}
 }
