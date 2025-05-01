@@ -29,7 +29,7 @@ namespace Application.Batch.Infrastructure.Pdf
 							.MoveText(182, 555)
 							.ShowText($"{customer.FirstName} {customer.LastName}")
 							.EndText();
-						
+
 						Address? address = customer.Addresses.FirstOrDefault();
 
 						if (address != null)

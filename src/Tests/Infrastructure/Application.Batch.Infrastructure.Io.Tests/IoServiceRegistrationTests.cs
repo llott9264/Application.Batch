@@ -76,7 +76,7 @@ public class IoServiceRegistrationTests
 		services.AddIoServices();
 		ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-		ICustomerToPrintContractor? customerToPrint = serviceProvider.GetService<ICustomerToPrintContractor>();
+		ICustomersToPrintContractor? customerToPrint = serviceProvider.GetService<ICustomersToPrintContractor>();
 		IRenewalsToPrintContractor? renewalsToPrint = serviceProvider.GetService<IRenewalsToPrintContractor>();
 		ICustomersFromContractor? customersFrom = serviceProvider.GetService<ICustomersFromContractor>();
 		IRevokesFromContractor? revokesFrom = serviceProvider.GetService<IRevokesFromContractor>();
@@ -127,8 +127,8 @@ public class IoServiceRegistrationTests
 		// Assert
 		using (IServiceScope scope = serviceProvider.CreateScope())
 		{
-			ICustomerToPrintContractor? service1 = scope.ServiceProvider.GetService<ICustomerToPrintContractor>();
-			ICustomerToPrintContractor? service2 = scope.ServiceProvider.GetService<ICustomerToPrintContractor>();
+			ICustomersToPrintContractor? service1 = scope.ServiceProvider.GetService<ICustomersToPrintContractor>();
+			ICustomersToPrintContractor? service2 = scope.ServiceProvider.GetService<ICustomersToPrintContractor>();
 
 			IRenewalsToPrintContractor? service3 = scope.ServiceProvider.GetService<IRenewalsToPrintContractor>();
 			IRenewalsToPrintContractor? service4 = scope.ServiceProvider.GetService<IRenewalsToPrintContractor>();
@@ -161,19 +161,19 @@ public class IoServiceRegistrationTests
 		ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 		// Assert
-		ICustomerToPrintContractor? service1, service2;
+		ICustomersToPrintContractor? service1, service2;
 		IRenewalsToPrintContractor? service3, service4;
 		ICustomersFromContractor? service5, service6;
 		IRevokesFromContractor? service7, service8;
 
 		using (IServiceScope scope1 = serviceProvider.CreateScope())
 		{
-			service1 = scope1.ServiceProvider.GetService<ICustomerToPrintContractor>();
+			service1 = scope1.ServiceProvider.GetService<ICustomersToPrintContractor>();
 		}
 
 		using (IServiceScope scope2 = serviceProvider.CreateScope())
 		{
-			service2 = scope2.ServiceProvider.GetService<ICustomerToPrintContractor>();
+			service2 = scope2.ServiceProvider.GetService<ICustomersToPrintContractor>();
 		}
 
 		using (IServiceScope scope1 = serviceProvider.CreateScope())

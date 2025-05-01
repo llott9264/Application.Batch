@@ -1,3 +1,4 @@
+using Application.Batch.Core.Application.Contracts.Io;
 using Application.Batch.Core.Application.Features.Mapper;
 using Application.Batch.Core.Application.Features.Workflows.CustomersFromContractor.Commands.ProcessWorkflow;
 using Application.Batch.Infrastructure.Io.IncomingFiles;
@@ -58,7 +59,8 @@ public class CustomersFromContractorTests
 		string folderName = DateTime.Now.ToString("MMddyyyy");
 
 		//Act
-		CustomersFromContractor customersFromContractor = new(GetMockMediator().Object, GetMapper());
+		ICustomersFromContractor customersFromContractor =
+			new CustomersFromContractor(GetMockMediator().Object, GetMapper());
 
 		//Assert
 		Assert.True(customersFromContractor.BatchName == "Customers From Print Contractor");
@@ -84,7 +86,9 @@ public class CustomersFromContractorTests
 	public async Task ReadFile_ValidFile_ReturnsValidCustomerViewModel()
 	{
 		//Arrange
-		CustomersFromContractor customersFromContractor = new(GetMockMediator().Object, GetMapper());
+		ICustomersFromContractor customersFromContractor =
+			new CustomersFromContractor(GetMockMediator().Object, GetMapper());
+
 		if (!Directory.Exists(customersFromContractor.ArchiveFolder))
 		{
 			Directory.CreateDirectory(customersFromContractor.ArchiveFolder);
@@ -111,7 +115,9 @@ public class CustomersFromContractorTests
 	{
 		//Arrange
 		Mock<IMediator> mock = GetMockMediator();
-		CustomersFromContractor customersFromContractor = new(mock.Object, GetMapper());
+		ICustomersFromContractor customersFromContractor =
+			new CustomersFromContractor(mock.Object, GetMapper());
+
 		if (File.Exists(customersFromContractor.ArchiveFileFullPath))
 		{
 			File.Delete(customersFromContractor.ArchiveFileFullPath);

@@ -11,7 +11,7 @@ public static class IoServiceRegistration
 	public static IServiceCollection AddIoServices(this IServiceCollection services)
 	{
 		services.AddFileManagementServices();
-		services.AddScoped<ICustomerToPrintContractor, CustomersToPrintContractor>();
+		services.AddScoped<ICustomersToPrintContractor, CustomersToPrintContractor>();
 		services.AddScoped<IRenewalsToPrintContractor, RenewalsToPrintContractor>();
 		services.AddScoped<ICustomersFromContractor, CustomersFromContractor>();
 		services.AddScoped<IRevokesFromContractor, RevokesFromContractor>();

@@ -13,7 +13,7 @@ namespace Application.Batch.Core.Application.Tests;
 public class ApplicationServiceRegistrationTests
 {
 	private readonly IConfigurationRoot _configuration = new ConfigurationBuilder()
-		.AddInMemoryCollection(new Dictionary<string, string>
+		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
 			{
 				"NLogConfigFile",

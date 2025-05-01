@@ -1,8 +1,8 @@
-﻿using Application.Batch.Core.Domain.Entities;
+﻿using System.Linq.Expressions;
+using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Linq.Expressions;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests.Repositories;
 
@@ -218,7 +218,7 @@ public class RepositoryTests
 	public void Find_EmptyIncludes_DoesNotCallInclude()
 	{
 		// Arrange
-		Address address = new() { Id = 1, Street = "123 Main Street"};
+		Address address = new() { Id = 1, Street = "123 Main Street" };
 		Expression<Func<Address, bool>> predicate = a => a.Id == 1;
 		List<string> includes = new();
 
@@ -236,7 +236,7 @@ public class RepositoryTests
 	public async Task FindAsync_WithoutIncludes_ReturnsMatchingEntity()
 	{
 		// Arrange
-		var address = new Address { Id = 1, Street = "123 Main Street" };
+		Address address = new() { Id = 1, Street = "123 Main Street" };
 		Expression<Func<Address, bool>> predicate = a => a.Id == 1;
 
 		//IQueryable<Address> data = new List<Address> { address }.AsQueryable();

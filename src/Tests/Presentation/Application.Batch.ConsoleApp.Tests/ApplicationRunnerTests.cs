@@ -16,7 +16,7 @@ namespace Application.Batch.ConsoleApp.Tests
 				.Returns(Task.CompletedTask);
 			return mock;
 		}
-		
+
 		[Fact]
 		public async Task RunAsync_WithValidWorkflowName_SendsProcessWorkflowCommand()
 		{
@@ -24,7 +24,7 @@ namespace Application.Batch.ConsoleApp.Tests
 			Mock<IMediator> mockMediator = GetMockMediator();
 			ApplicationRunner runner = new(mockMediator.Object);
 			string[] args = ["CustomersToPrintContractor"];
-			
+
 			// Act
 			await runner.RunAsync(args);
 
@@ -63,14 +63,14 @@ namespace Application.Batch.ConsoleApp.Tests
 			Mock<IMediator> mockMediator = GetMockMediator();
 			ApplicationRunner runner = new(mockMediator.Object);
 			string[] args = [];
-	
+
 			// Act
 			await runner.RunAsync(args);
 
 			// Assert
 			mockMediator.Verify(m => m.Send(It.Is<CreateLogCommand>(
 					cmd => cmd.Message.Contains("Invalid parameter:")
-					       && cmd.LogType == LogType.Error),
+						   && cmd.LogType == LogType.Error),
 				CancellationToken.None), Times.Once);
 		}
 
