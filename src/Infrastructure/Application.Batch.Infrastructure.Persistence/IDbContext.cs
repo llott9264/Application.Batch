@@ -1,5 +1,6 @@
 ﻿using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Utilities.UnitOfWork.Contracts;
 
 namespace Application.Batch.Infrastructure.Persistence;
 

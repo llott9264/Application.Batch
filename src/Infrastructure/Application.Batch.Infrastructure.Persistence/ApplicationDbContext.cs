@@ -3,6 +3,8 @@ using Application.Batch.Core.Domain.Common;
 using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Utilities.UnitOfWork.Contracts;
+using Utilities.UnitOfWork.Infrastructure;
 
 namespace Application.Batch.Infrastructure.Persistence;
 

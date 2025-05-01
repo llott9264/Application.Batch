@@ -1,6 +1,7 @@
 ﻿using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Domain.Entities;
 using Moq;
+using Utilities.UnitOfWork.Contracts;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
 

@@ -1,5 +1,6 @@
 ﻿using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Infrastructure.Persistence.Repositories;
+using Utilities.UnitOfWork.Infrastructure;
 
 namespace Application.Batch.Infrastructure.Persistence;
 

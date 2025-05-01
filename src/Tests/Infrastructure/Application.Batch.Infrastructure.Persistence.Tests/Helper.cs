@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
+using Utilities.UnitOfWork.Contracts;
 
 namespace Application.Batch.Infrastructure.Persistence.Tests;
 

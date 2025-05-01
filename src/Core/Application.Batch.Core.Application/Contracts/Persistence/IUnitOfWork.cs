@@ -1,4 +1,6 @@
-﻿namespace Application.Batch.Core.Application.Contracts.Persistence;
+﻿using Utilities.UnitOfWork.Contracts;
+
+namespace Application.Batch.Core.Application.Contracts.Persistence;
 
 public interface IUnitOfWork : IUnitOfWorkBase
 {

@@ -1,6 +1,7 @@
 ﻿using Application.Batch.Core.Application.Contracts.Persistence;
 using Application.Batch.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Utilities.UnitOfWork.Infrastructure;
 
 namespace Application.Batch.Infrastructure.Persistence.Repositories;
 
