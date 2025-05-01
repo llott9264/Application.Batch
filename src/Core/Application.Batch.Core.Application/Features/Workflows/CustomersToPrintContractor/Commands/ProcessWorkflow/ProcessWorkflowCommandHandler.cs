@@ -10,7 +10,7 @@ namespace Application.Batch.Core.Application.Features.Workflows.CustomersToPrint
 
 public class ProcessWorkflowCommandHandler(
 	IMediator mediator,
-	ICustomerToPrintContractor outgoingFile,
+	ICustomersToPrintContractor outgoingFile,
 	IUnitOfWork unitOfWork) : IRequestHandler<ProcessWorkflowCommand>
 {
 	public async Task Handle(ProcessWorkflowCommand request, CancellationToken cancellationToken)

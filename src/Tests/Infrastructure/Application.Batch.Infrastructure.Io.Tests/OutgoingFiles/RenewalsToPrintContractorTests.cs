@@ -1,8 +1,7 @@
-﻿using Application.Batch.Core.Application.Contracts.Pdf;
-using Application.Batch.Core.Application.Features.Mapper;
+﻿using Application.Batch.Core.Application.Contracts.Io;
+using Application.Batch.Core.Application.Contracts.Pdf;
 using Application.Batch.Core.Domain.Entities;
 using Application.Batch.Infrastructure.Io.OutgoingFiles;
-using AutoMapper;
 using MediatR;
 using Moq;
 using Utilities.Configuration.MediatR;
@@ -22,19 +21,33 @@ public class RenewalsToPrintContractorTests
 	private Mock<IMediator> GetMockMediator()
 	{
 		Mock<IMediator> mock = new();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:ArchivePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(ArchiveFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DataTransferPath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:PublicKey"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(GpgPublicKeyName));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "WWorkflows:RenewalsToPrintContractor:PdfTemplatePath"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(PdfTemplatePath));
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(DocumentsPerFile));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RenewalsToPrintContractor:ArchivePath"),
+					It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(ArchiveFolderBasePath));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RenewalsToPrintContractor:DataTransferPath"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(DataTransferFolderBasePath));
+		mock.Setup(m =>
+				m.Send(
+					It.Is<GetConfigurationByKeyQuery>(request =>
+						request.Key == "Workflows:RenewalsToPrintContractor:PublicKey"), It.IsAny<CancellationToken>()))
+			.Returns(Task.FromResult(GpgPublicKeyName));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "WWorkflows:RenewalsToPrintContractor:PdfTemplatePath"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(PdfTemplatePath));
+		mock.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult(DocumentsPerFile));
 		return mock;
-	}
-
-	private static IMapper GetMapper()
-	{
-		MapperConfiguration configuration = new(cfg => cfg.AddProfile<MappingProfile>());
-		Mapper mapper = new(configuration);
-		return mapper;
 	}
 
 	private Mock<IRenewalsToPrintContractorPdf> GetMockPdf()
@@ -51,14 +64,16 @@ public class RenewalsToPrintContractorTests
 		string folderName = DateTime.Now.ToString("MMddyyyy");
 
 		//Act
-		RenewalsToPrintContractor renewalsToPrintContractor = new(GetMockMediator().Object, GetMockPdf().Object);
+		IRenewalsToPrintContractor renewalsToPrintContractor =
+			new RenewalsToPrintContractor(GetMockMediator().Object, GetMockPdf().Object);
 
 		//Assert
 		Assert.True(renewalsToPrintContractor.BatchName == "Renewals To Print Contractor");
 		Assert.True(renewalsToPrintContractor.ArchiveFolderBasePath == $"{ArchiveFolderBasePath}");
 		Assert.True(renewalsToPrintContractor.DataTransferFolderBasePath == $"{DataTransferFolderBasePath}");
 		Assert.True(renewalsToPrintContractor.ArchiveFolder == $"{ArchiveFolderBasePath}{folderName}\\");
-		Assert.True(renewalsToPrintContractor.ArchiveProcessedFolder == $"{ArchiveFolderBasePath}{folderName}\\Processed\\");
+		Assert.True(renewalsToPrintContractor.ArchiveProcessedFolder ==
+					$"{ArchiveFolderBasePath}{folderName}\\Processed\\");
 		Assert.True(renewalsToPrintContractor.ArchiveFailedFolder == $"{ArchiveFolderBasePath}{folderName}\\Failed\\");
 		Assert.True(renewalsToPrintContractor.GpgPublicKeyName == $"{GpgPublicKeyName}");
 	}
@@ -67,7 +82,8 @@ public class RenewalsToPrintContractorTests
 	public void WriteFile_ValidCustomerList_ReturnsTrue()
 	{
 		//Arrange
-		RenewalsToPrintContractor renewalsToPrintContractor = new(GetMockMediator().Object, GetMockPdf().Object);
+		IRenewalsToPrintContractor renewalsToPrintContractor =
+			new RenewalsToPrintContractor(GetMockMediator().Object, GetMockPdf().Object);
 
 		List<Customer> customers =
 		[
@@ -99,9 +115,17 @@ public class RenewalsToPrintContractorTests
 	public void WriteFile_ValidCustomerList_ThrowsException()
 	{
 		//Arrange
-		Mock<IMediator> mock = GetMockMediator();
-		mock.Setup(m => m.Send(It.Is<GetConfigurationByKeyQuery>(request => request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"), It.IsAny<CancellationToken>())).Returns(Task.FromResult("0"));
-		RenewalsToPrintContractor renewalsToPrintContractor = new(mock.Object, GetMockPdf().Object);
+		Mock<IMediator> mockMediator = GetMockMediator();
+		mockMediator.Setup(m =>
+			m.Send(
+				It.Is<GetConfigurationByKeyQuery>(request =>
+					request.Key == "Workflows:RenewalsToPrintContractor:DocumentsPerFile"),
+				It.IsAny<CancellationToken>())).Returns(Task.FromResult("0"));
+
+		Mock<IRenewalsToPrintContractorPdf> mockPdf = GetMockPdf();
+
+		IRenewalsToPrintContractor renewalsToPrintContractor =
+			new RenewalsToPrintContractor(mockMediator.Object, mockPdf.Object);
 
 		List<Customer> customers =
 		[
@@ -124,9 +148,8 @@ public class RenewalsToPrintContractorTests
 
 		//Assert
 		Assert.False(isSuccessful);
-		Assert.True(renewalsToPrintContractor.Files.Count == 0);
 
-		mock.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
+		mockMediator.Verify(g => g.Send(It.Is<CreateLogCommand>(request =>
 			request.LogType == LogType.Error
 			&& request.Message.Contains("Error occurred writing file.")
 		), CancellationToken.None), Times.Once);

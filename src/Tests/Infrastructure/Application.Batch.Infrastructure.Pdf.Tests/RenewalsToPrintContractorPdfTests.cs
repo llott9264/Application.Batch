@@ -11,15 +11,17 @@ public class RenewalsToPrintContractorPdfTests
 		string templatePdfPath = "PdfTemplate.pdf";
 		string destinationFileFullPath = "RenewalsToPrintContractorPdf\\TestPdf.pdf";
 
-		if (!System.IO.Directory.Exists("RenewalsToPrintContractorPdf"))
-			System.IO.Directory.CreateDirectory("RenewalsToPrintContractorPdf");
+		if (!Directory.Exists("RenewalsToPrintContractorPdf"))
+		{
+			Directory.CreateDirectory("RenewalsToPrintContractorPdf");
+		}
 
 		Customer[] customers = new Customer[2];
-		customers[0] = new Customer()
+		customers[0] = new Customer
 		{
 			FirstName = "John",
 			LastName = "Smith",
-			Addresses = new List<Address>()
+			Addresses = new List<Address>
 			{
 				new()
 				{
@@ -31,11 +33,11 @@ public class RenewalsToPrintContractorPdfTests
 			}
 		};
 
-		customers[1] = new Customer()
+		customers[1] = new Customer
 		{
 			FirstName = "Joe",
 			LastName = "Jones",
-			Addresses = new List<Address>()
+			Addresses = new List<Address>
 			{
 				new()
 				{

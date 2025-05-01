@@ -9,7 +9,7 @@ public class ApplicationDbContextTests
 	private ApplicationDbContext CreateInMemoryContext()
 	{
 		DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+			.UseInMemoryDatabase(Guid.NewGuid().ToString())
 			.ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
 			.Options;
 		return new ApplicationDbContext(options);
@@ -19,7 +19,7 @@ public class ApplicationDbContextTests
 	public async Task SaveChangesAsync_SetsAuditFields()
 	{
 		// Arrange
-		using (ApplicationDbContext context = CreateInMemoryContext())
+		await using (ApplicationDbContext context = CreateInMemoryContext())
 		{
 			Address address = new()
 			{
@@ -34,7 +34,6 @@ public class ApplicationDbContextTests
 			await context.SaveChangesAsync();
 
 			// Assert
-			Assert.NotNull(address.CreatedDate);
 			Assert.True(DateTime.Now - address.CreatedDate < TimeSpan.FromSeconds(1));
 			Assert.NotNull(address.CreatedBy);
 			Assert.Null(address.LastModifiedDate);

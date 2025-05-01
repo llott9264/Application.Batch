@@ -13,7 +13,7 @@ internal class CustomersToPrintContractor(IMediator mediator)
 		GetArchiveFolderBasePath(mediator),
 		GetDataTransferFolderBasePath(mediator),
 		"CustomerList.txt",
-		"CustomerList.txt.gpg", GetGpgPublicKeyName(mediator)), ICustomerToPrintContractor
+		"CustomerList.txt.gpg", GetGpgPublicKeyName(mediator)), ICustomersToPrintContractor
 {
 	public string BatchName => "Customer To Print Contractor";
 

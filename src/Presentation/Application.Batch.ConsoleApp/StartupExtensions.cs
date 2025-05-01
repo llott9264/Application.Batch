@@ -13,7 +13,7 @@ public static class StartupExtensions
 	public static IConfiguration GetConfiguration(this ConfigurationBuilder builder)
 	{
 		builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-			.AddJsonFile("appSettings.json", optional: false, reloadOnChange: true);
+			.AddJsonFile("appSettings.json", false, true);
 
 		return builder.Build();
 	}
@@ -24,7 +24,7 @@ public static class StartupExtensions
 			.ConfigureServices((context, services) =>
 			{
 				services.AddSingleton<IConfiguration>(provider => configuration);
-				services.AddPersistenceServices(configuration);
+				services.AddPersistenceServices("ConnectionStrings:Customer");
 				services.AddApplicationServices(configuration);
 				services.AddIoServices();
 				services.AddPdfServices();
