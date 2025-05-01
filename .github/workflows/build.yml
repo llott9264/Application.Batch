@@ -24,3 +24,5 @@ jobs:
         run: dotnet build ./src/Application.Batch.sln
       - name: Run Unit Tests
         run: dotnet test ./src/Application.Batch.sln
+      - name: Check Formatting
+        run: dotnet format src/Application.Batch.sln --verify-no-changes --verbosity diagnostic

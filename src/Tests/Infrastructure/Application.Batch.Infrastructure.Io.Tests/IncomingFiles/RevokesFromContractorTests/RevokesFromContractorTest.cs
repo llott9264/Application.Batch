@@ -102,10 +102,10 @@ public class RevokesFromContractorTest
 
 		//Assert
 		Assert.True(revokeViewModels.Count == 4);
-		Assert.True(revokeViewModels.Any(r => r.IsRevoked && r.SocialSecurityNumber == "123456789"));
-		Assert.True(revokeViewModels.Any(r => !r.IsRevoked && r.SocialSecurityNumber == "234567890"));
-		Assert.True(revokeViewModels.Any(r => r.IsRevoked && r.SocialSecurityNumber == "987654321"));
-		Assert.True(revokeViewModels.Any(r => !r.IsRevoked && r.SocialSecurityNumber == "876543210"));
+		Assert.Contains(revokeViewModels, r => r.IsRevoked && r.SocialSecurityNumber == "123456789");
+		Assert.Contains(revokeViewModels, r => !r.IsRevoked && r.SocialSecurityNumber == "234567890");
+		Assert.Contains(revokeViewModels, r => r.IsRevoked && r.SocialSecurityNumber == "987654321");
+		Assert.Contains(revokeViewModels, r => !r.IsRevoked && r.SocialSecurityNumber == "876543210");
 	}
 
 	[Fact]

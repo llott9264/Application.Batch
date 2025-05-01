@@ -23,11 +23,15 @@ public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext>
 			{
 				case EntityState.Added:
 					entry.Entity.CreatedDate = DateTime.Now;
+#pragma warning disable CA1416
 					entry.Entity.CreatedBy = WindowsIdentity.GetCurrent().Name;
+#pragma warning restore CA1416
 					break;
 				case EntityState.Modified:
 					entry.Entity.LastModifiedDate = DateTime.Now;
+#pragma warning disable CA1416
 					entry.Entity.LastModifiedBy = WindowsIdentity.GetCurrent().Name;
+#pragma warning restore CA1416
 					break;
 			}
 		}
@@ -43,11 +47,15 @@ public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext>
 			{
 				case EntityState.Added:
 					entry.Entity.CreatedDate = DateTime.Now;
+#pragma warning disable CA1416
 					entry.Entity.CreatedBy = WindowsIdentity.GetCurrent().Name;
+#pragma warning restore CA1416
 					break;
 				case EntityState.Modified:
 					entry.Entity.LastModifiedDate = DateTime.Now;
+#pragma warning disable CA1416
 					entry.Entity.LastModifiedBy = WindowsIdentity.GetCurrent().Name;
+#pragma warning restore CA1416
 					break;
 			}
 		}

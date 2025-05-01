@@ -50,10 +50,10 @@ public class CustomersFromContractorTests
 
 		Mock<ICustomerRepository> mockCustomerRepository = new Mock<ICustomerRepository>();
 		mockCustomerRepository.Setup(m => m.Find(It.IsAny<Expression<Func<Customer, bool>>>())).Returns(customers);
-		
+
 		Mock<IUnitOfWork> mock = new();
-			mock.Setup(m => m.Customers).Returns(mockCustomerRepository.Object);
-			return mock;
+		mock.Setup(m => m.Customers).Returns(mockCustomerRepository.Object);
+		return mock;
 	}
 
 	private static Mock<IUnitOfWork> GetMockUnitOfWorkForAdd()
@@ -163,7 +163,7 @@ public class CustomersFromContractorTests
 		Mock<IMediator> mockMediator = GetMockMediator();
 		Mock<ICustomersFromContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(false);
-		
+
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, GetMockUnitOfWorkForUpdate().Object);
 
@@ -227,7 +227,7 @@ public class CustomersFromContractorTests
 		Mock<ICustomersFromContractor> mockWorkflow = GetMockWorkflow();
 		mockWorkflow.Setup(w => w.DoesArchiveGpgFileExist()).Returns(true);
 		mockWorkflow.Setup(w => w.DoesArchiveFileExist()).Returns(true);
-		
+
 		ProcessWorkflowCommand command = new();
 		ProcessWorkflowCommandHandler handler = new(mockMediator.Object, mockWorkflow.Object, GetMockUnitOfWorkForUpdate().Object);
 

@@ -16,7 +16,7 @@ namespace Application.Batch.Infrastructure.Pdf.Tests
 			services.AddPdfServices();
 			ServiceProvider serviceProvider = services.BuildServiceProvider();
 			IRenewalsToPrintContractorPdf? renewalsToPrintContractorPdf = serviceProvider.GetService<IRenewalsToPrintContractorPdf>();
-			
+
 			//Assert
 			Assert.NotNull(renewalsToPrintContractorPdf);
 			Assert.IsType<RenewalsToPrintContractorPdf>(renewalsToPrintContractorPdf);
